@@ -32,10 +32,85 @@ void Z80::Init()
 	registers[0] = 0x01b0;
 	registers[1] = 0x0013;
 	registers[2] = 0x00d8;
-	registers[4] = 0x014d;
+	registers[3] = 0x014d;
 	sp = 0xfffe;
 	pc = 0x100;
-	memset(&rom, 0, sizeof(rom));
-	memset(&ram, 0, sizeof(ram));
+	memset(&memory, 0, sizeof(memory));
 	memset(&screen, 0, sizeof(screen));
+}
+
+void Z80::Cycle()
+{
+	byte opcode = Fetch();
+	Decode(opcode);
+}
+
+byte Z80::Fetch()
+{
+	byte opcode = memory[pc];
+	pc++;
+	return opcode;
+}
+
+void Z80::Decode(byte opcode)
+{
+	if(opcode == 0xCB)
+	{
+		opcode = Fetch();
+		switch(opcode)
+		{
+
+		}
+	}
+	else
+	{
+		switch(opcode)
+		{
+			break;
+		}
+	}
+}
+
+/////////////////////////////////////////////////////////////
+
+void Z80::Ex01()
+{
+	int nn = memory[pc++];
+	nn <<= 8;
+	nn |= memory[pc++];
+	registers[BC] = nn;
+}
+
+void Z80::Ex02()
+{
+	int a = registers[AF];
+	a >>= 8;
+	memory[registers[BC]] = a;
+}
+
+void Z80::Ex03()
+{
+	registers[BC] += 1;
+}
+
+void Z80::Ex04()
+{
+	int b = registers[BC];
+	b >>= 8;
+	int c = registers[BC];
+	b++;
+	b <<= 8;
+	b |= c;
+	registers[BC] = b;
+}
+
+void Z80::Ex05()
+{
+	int b = registers[BC];
+	b >>= 8;
+	int c = registers[BC];
+	b--;
+	b <<= 8;
+	b |= c;
+	registers[BC] = b;
 }
