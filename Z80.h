@@ -3,16 +3,10 @@
 #include <string>
 #include <stdint.h>
 
-
-typedef int8_t byte; // Signed 8-bits
-typedef int16_t word; // Signed 16-bits
-typedef uint8_t ubyte; // Unsigned 8-bits
-typedef uint16_t uword; // Unsigned 16-bits
-
-constexpr byte AF = 0;
-constexpr byte BC = 1;
-constexpr byte DE = 2;
-constexpr byte HL = 3;
+constexpr int AF = 0;
+constexpr int BC = 1;
+constexpr int DE = 2;
+constexpr int HL = 3;
 
 class Z80
 {
@@ -20,10 +14,14 @@ public:
 	Z80();
 	bool LoadCartridge(std::string path);
 	void Init();
+	uint8_t GetHiRegister(uint16_t reg);
+	uint8_t GetLoRegister(uint16_t reg);
 private:
+	void SetHiRegister(uint16_t &reg, uint8_t hi);
+	void SetLoRegister(uint16_t &reg, uint8_t lo);
 	void Cycle();
-	byte Fetch();
-	void Decode(byte opcode);
+	uint8_t Fetch();
+	void Decode(uint8_t opcode);
 	// OPCODES
 	/*/////////*/void Ex01(); void Ex02(); void Ex03(); void Ex04(); void Ex05(); void Ex06(); void Ex07(); void Ex08(); void Ex09(); void Ex0A(); void Ex0B(); void Ex0C(); void Ex0D(); void Ex0E(); void Ex0F();
 	void Ex10(); void Ex11(); void Ex12(); void Ex13(); void Ex14(); void Ex15(); void Ex16(); void Ex17(); void Ex18(); void Ex19(); void Ex1A(); void Ex1B(); void Ex1C(); void Ex1D(); void Ex1E(); void Ex1F();
@@ -54,11 +52,10 @@ private:
 		Bit 5: Half carry flag(H)
 		Bit 4: Carry flag(C)
 	*/
-	word registers[4];
-	word sp;
-	word pc;
-	byte cartridge[0x200000];
-	byte memory[0x10000];
-	byte screen[144][160][3];
-	std::string rompath;
+	uint16_t registers[4];
+	uint16_t sp;
+	uint16_t pc;
+	uint8_t cartridge[0x200000];
+	uint8_t memory[0x10000];
+	uint8_t screen[144][160];
 };
