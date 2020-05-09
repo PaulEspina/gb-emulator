@@ -31,6 +31,7 @@ private:
 	byte Read(word address);
 	void Cycle();
 	byte Fetch();
+	byte Decode();
 	// OPCODES
 	byte LDRR(Reg &l, Reg &r);
 	byte LDRN(Reg &reg);
@@ -72,6 +73,50 @@ private:
 	byte INCRR(Reg &reg);
 	byte DECRR(Reg &reg);
 	byte LDHLSP();
+	byte RLCA();
+	byte RLA();
+	byte RRCA();
+	byte RRA();
+	byte RLCR(Reg &reg);
+	byte RLCHL();
+	byte RLR(Reg &reg);
+	byte RLHL();
+	byte RRCR(Reg &reg);
+	byte RRCHL();
+	byte RRR(Reg &reg);
+	byte RRHL();
+	byte SLAR(Reg &reg);
+	byte SLAHL();
+	byte SWAPR(Reg &reg);
+	byte SWAPHL();
+	byte SRAR(Reg &reg);
+	byte SRAHL();
+	byte SRLR(Reg &reg);
+	byte SRLHL();
+	byte BITR(Reg &reg);
+	byte BITHL();
+	byte SETR(Reg &reg);
+	byte SETHL();
+	byte RESR(Reg &reg);
+	byte RESHL();
+	byte CCF();
+	byte SCF();
+	byte NOP();
+	byte HALT();
+	byte STOP();
+	byte DI();
+	byte EI();
+	byte JPNN();
+	byte JPHL();
+	byte JPF();
+	byte JRPC();
+	byte JRFPC();
+	byte CALLNN();
+	byte CALLF();
+	byte RET();
+	byte RETF();
+	byte RETI();
+	byte RST();
 
 	/*
 		Registers

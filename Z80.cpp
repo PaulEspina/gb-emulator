@@ -1,30 +1,29 @@
 #include "Z80.h"
 
 #include <fstream>
-#include <vector>
 
 Z80::Z80()
 {
+	Init();
 }
 
 bool Z80::LoadCartridge(std::string path)
 {
-	rompath = path;
 	std::ifstream file(path, std::ifstream::binary | std::ifstream::in);
-	if(!file.is_open())
+	if(file.is_open())
 	{
-		return false;
+		file.seekg(0, std::ios::end);
+		std::streamoff length = file.tellg();
+		file.seekg(0, std::ios::beg);
+		std::vector<char> result((unsigned int) length);
+		file.read(&result[0], length);
+		for(unsigned int i = 0, size = result.size(); i < size; i++)
+		{
+			cartridge[i] = (byte) result[i];
+		}
+		return true;
 	}
-	file.seekg(0, std::ios::end);
-	std::streamoff length = file.tellg();
-	file.seekg(0, std::ios::beg);
-	std::vector<char> result((unsigned int) length);
-	file.read(&result[0], length);
-	for(unsigned int i = 0, size = result.size(); i < size; i++)
-	{
-		cartridge[i] = (byte) result[i];
-	}
-	return true;
+	return false;
 }
 
 void Z80::Init()
@@ -39,78 +38,43 @@ void Z80::Init()
 	memset(&screen, 0, sizeof(screen));
 }
 
+void Z80::Write(word address, byte data)
+{
+	if(address >= 0xa000 && address <= 0x7fff)
+	{
+		memory[address] = data;
+	}
+}
+
+byte Z80::Read(word address)
+{
+	if(address >= 0 && address <= 0xbfff)
+	{
+		return memory[address];
+	}
+}
+
 void Z80::Cycle()
 {
-	byte opcode = Fetch();
-	Decode(opcode);
+	if(clock_count == 0)
+	{
+		byte code = Fetch();
+
+	}
+	clock_count--;
 }
 
 byte Z80::Fetch()
 {
-	byte opcode = memory[pc];
-	pc++;
-	return opcode;
+	return Read(pc++);
 }
 
-void Z80::Decode(byte opcode)
+byte Z80::Decode()
 {
-	if(opcode == 0xCB)
-	{
-		opcode = Fetch();
-		switch(opcode)
-		{
-
-		}
-	}
-	else
-	{
-		switch(opcode)
-		{
-			break;
-		}
-	}
+	return byte();
 }
 
 /////////////////////////////////////////////////////////////
 
-void Z80::Ex01()
-{
-	int nn = memory[pc++];
-	nn <<= 8;
-	nn |= memory[pc++];
-	registers[BC] = nn;
-}
 
-void Z80::Ex02()
-{
-	int a = registers[AF];
-	a >>= 8;
-	memory[registers[BC]] = a;
-}
 
-void Z80::Ex03()
-{
-	registers[BC] += 1;
-}
-
-void Z80::Ex04()
-{
-	int b = registers[BC];
-	b >>= 8;
-	int c = registers[BC];
-	b++;
-	b <<= 8;
-	b |= c;
-	registers[BC] = b;
-}
-
-void Z80::Ex05()
-{
-	int b = registers[BC];
-	b >>= 8;
-	int c = registers[BC];
-	b--;
-	b <<= 8;
-	b |= c;
-	registers[BC] = b;
-}
