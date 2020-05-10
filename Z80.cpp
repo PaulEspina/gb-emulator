@@ -4,6 +4,13 @@
 
 Z80::Z80()
 {
+	memset(&registers, 0, sizeof(registers));
+	sp = 0;
+	pc = 0;
+	memset(&cartridge, 0, sizeof(cartridge));
+	memset(&memory, 0, sizeof(memory));
+	memset(&screen, 0, sizeof(screen));
+	cycle_count = 0;
 	Init();
 }
 
@@ -21,7 +28,7 @@ bool Z80::LoadCartridge(std::string path)
 	file.read(&result[0], length);
 	for(unsigned int i = 0, size = result.size(); i < size; i++)
 	{
-		cartridge[i] = (byte) result[i];
+		cartridge[i] = (uint8_t) result[i];
 	}
 	return true;
 }
@@ -38,79 +45,44 @@ void Z80::Init()
 	memset(&screen, 0, sizeof(screen));
 }
 
-void Z80::Cycle()
+uint8_t Z80::GetHiRegister(uint16_t reg)
 {
-	byte opcode = Fetch();
-	Decode(opcode);
+	return reg >> 8;
 }
 
-byte Z80::Fetch()
+uint8_t Z80::GetLoRegister(uint16_t reg)
 {
-	byte opcode = memory[pc];
+	return reg & 0x00ff;
+}
+
+void Z80::SetHiRegister(uint16_t &reg, uint8_t hi)
+{
+	uint8_t lo = reg & 0x00ff;
+	uint16_t temp = hi << 8;
+	reg = temp | lo;
+}
+
+void Z80::SetLoRegister(uint16_t &reg, uint8_t lo)
+{
+	uint16_t hi = reg & 0xff00;
+	reg = hi | lo;
+}
+
+void Z80::Cycle()
+{
+	if(cycle_count > 0)
+	{
+		uint8_t opcode = Fetch();
+
+	}
+	cycle_count--;
+}
+
+uint8_t Z80::Fetch()
+{
+	uint8_t opcode = memory[pc];
 	pc++;
 	return opcode;
 }
 
-void Z80::Decode(byte opcode)
-{
-	if(opcode == 0xCB)
-	{
-		opcode = Fetch();
-		switch(opcode)
-		{
-
-		}
-	}
-	else
-	{
-		switch(opcode)
-		{
-			break;
-		}
-	}
-	clock_count--;
-}
-
 /////////////////////////////////////////////////////////////
-
-void Z80::Ex01()
-{
-	int nn = memory[pc++];
-	nn <<= 8;
-	nn |= memory[pc++];
-	registers[BC] = nn;
-}
-
-void Z80::Ex02()
-{
-	int a = registers[AF];
-	a >>= 8;
-	memory[registers[BC]] = a;
-}
-
-void Z80::Ex03()
-{
-	registers[BC] += 1;
-}
-
-void Z80::Ex04()
-{
-	int b = registers[BC];
-	b >>= 8;
-	int c = registers[BC];
-	b++;
-	b <<= 8;
-	b |= c;
-	registers[BC] = b;
-}
-
-void Z80::Ex05()
-{
-	int b = registers[BC];
-	b >>= 8;
-	int c = registers[BC];
-	b--;
-	b <<= 8;
-	b |= c;
-	registers[BC] = b;
-}
