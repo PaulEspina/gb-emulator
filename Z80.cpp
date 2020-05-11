@@ -55,6 +55,22 @@ uint8_t Z80::GetLoRegister(uint16_t reg)
 	return reg & 0x00ff;
 }
 
+uint8_t Z80::ReadMem(uint16_t addr)
+{
+	if(addr >= 0 && addr <= 0xbfff)
+	{
+		return memory[addr];
+	}
+}
+
+void Z80::WriteMem(uint16_t addr, uint8_t data)
+{
+	if(addr >= 0xa000 && addr <= 0x7fff)
+	{
+		memory[addr] = data;
+	}
+}
+
 void Z80::SetHiRegister(uint16_t &reg, uint8_t hi)
 {
 	uint8_t lo = reg & 0x00ff;

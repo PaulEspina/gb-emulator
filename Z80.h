@@ -18,6 +18,8 @@ public:
 	uint8_t GetHiRegister(uint16_t reg);
 	uint8_t GetLoRegister(uint16_t reg);
 private:
+	uint8_t ReadMem(uint16_t addr);
+	void WriteMem(uint16_t addr, uint8_t data);
 	void SetHiRegister(uint16_t &reg, uint8_t hi);
 	void SetLoRegister(uint16_t &reg, uint8_t lo);
 	void Cycle();
