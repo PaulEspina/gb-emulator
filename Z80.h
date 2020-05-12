@@ -44,6 +44,7 @@ private:
 	void LD8(uint16_t &reg, std::string pos, uint8_t data);
 	void LD8(uint16_t addr, uint8_t data);
 	void LD16(uint16_t &rr1, uint16_t data);
+	void Add8(uint8_t data, bool carry);
 	/*
 		Registers
 		0 - AF

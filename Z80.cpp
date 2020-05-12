@@ -125,3 +125,39 @@ void Z80::LD16(uint16_t &reg, uint16_t data)
 	reg = data;
 }
 
+void Z80::Add8(uint8_t data, bool carry)
+{
+	uint8_t f = registers[AF] & 0x00ff;
+	uint8_t a = (registers[AF] & 0xff00) >> 8;
+	if(carry)
+	{
+		data += (f & 0b00010000);
+	}
+	if((((a & 0xf) + (data & 0xf)) & 0x10) == 0x10)
+	{
+		f |= 0b00100000;
+	}
+	else
+	{
+		f &= 0b11011111;
+	}
+	a += data;
+	if(a > 255)
+	{
+		f |= 0b00010000;
+	}
+	else
+	{
+		if(a == 0)
+		{
+			f |= 0b10000000;
+		}
+		else
+		{
+			f &= 0b01111111;
+		}
+		f &= 0b11101111;
+	}
+	f |= 0b01000000;
+}
+
