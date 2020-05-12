@@ -71,19 +71,6 @@ void Z80::WriteMem(uint16_t addr, uint8_t data)
 	}
 }
 
-void Z80::SetHiRegister(uint16_t &reg, uint8_t hi)
-{
-	uint8_t lo = reg & 0x00ff;
-	uint16_t temp = hi << 8;
-	reg = temp | lo;
-}
-
-void Z80::SetLoRegister(uint16_t &reg, uint8_t lo)
-{
-	uint16_t hi = reg & 0xff00;
-	reg = hi | lo;
-}
-
 void Z80::Cycle()
 {
 	if(cycle_count > 0)
@@ -102,3 +89,24 @@ uint8_t Z80::Fetch()
 }
 
 /////////////////////////////////////////////////////////////
+
+// regl = regr
+void Z80::LD8(uint16_t &r, std::string pos, uint8_t data)
+{
+	uint16_t data;
+	if(pos == "hi")
+	{
+		r &= 0x00ff;
+		data <<= 8;
+	}
+	else if(pos == "lo")
+	{
+		r &= 0xff00;
+	}
+	r |= data;
+}
+
+void Z80::LD8(uint16_t addr, uint8_t data)
+{
+	WriteMem(addr, data);
+}
