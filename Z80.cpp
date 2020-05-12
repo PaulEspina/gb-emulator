@@ -90,20 +90,29 @@ uint8_t Z80::Fetch()
 
 /////////////////////////////////////////////////////////////
 
-// regl = regr
-void Z80::LD8(uint16_t &rr, std::string pos, uint8_t data)
+void Z80::Push(uint16_t data)
+{
+	WriteMem(sp--, data);
+}
+
+void Z80::Pop(uint16_t &reg)
+{
+	reg = ReadMem(--sp);
+}
+
+void Z80::LD8(uint16_t &reg, std::string pos, uint8_t data)
 {
 	uint16_t data;
 	if(pos == "hi")
 	{
-		rr &= 0x00ff;
+		reg &= 0x00ff;
 		data <<= 8;
 	}
 	else if(pos == "lo")
 	{
-		rr &= 0xff00;
+		reg &= 0xff00;
 	}
-	rr |= data;
+	reg |= data;
 }
 
 void Z80::LD8(uint16_t addr, uint8_t data)
@@ -111,8 +120,8 @@ void Z80::LD8(uint16_t addr, uint8_t data)
 	WriteMem(addr, data);
 }
 
-void Z80::LD16(uint16_t &rr, uint16_t data)
+void Z80::LD16(uint16_t &reg, uint16_t data)
 {
-	rr = data;
+	reg = data;
 }
 
