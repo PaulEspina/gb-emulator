@@ -201,3 +201,25 @@ void Z80::And(uint8_t data)
 	SetHiRegister(registers[AF], (uint8_t) a);
 }
 
+void Z80::Xor(uint8_t data)
+{
+	uint16_t a = GetHiRegister(registers[AF]);
+	a ^= data;
+	SetFlag(FLAG_Z, a == 0);
+	SetFlag(FLAG_N, 0);
+	SetFlag(FLAG_H, 0);
+	SetFlag(FLAG_C, 0);
+	SetHiRegister(registers[AF], (uint8_t) a);
+}
+
+void Z80::Or(uint8_t data)
+{
+	uint16_t a = GetHiRegister(registers[AF]);
+	a |= data;
+	SetFlag(FLAG_Z, a == 0);
+	SetFlag(FLAG_N, 0);
+	SetFlag(FLAG_H, 0);
+	SetFlag(FLAG_C, 0);
+	SetHiRegister(registers[AF], (uint8_t) a);
+}
+

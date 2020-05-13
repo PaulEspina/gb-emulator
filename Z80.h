@@ -56,6 +56,8 @@ private:
 	void Add8(uint8_t data, bool carry);
 	void Sub(uint8_t data, bool carry);
 	void And(uint8_t data);
+	void Xor(uint8_t data);
+	void Or(uint8_t data);
 	/*
 		Registers
 		0 - AF
