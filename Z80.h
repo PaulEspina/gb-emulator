@@ -9,17 +9,24 @@ constexpr int BC = 1;
 constexpr int DE = 2;
 constexpr int HL = 3;
 
+constexpr int Z = 3;
+constexpr int N = 2;
+constexpr int H = 1;
+constexpr int C = 0;
+
 class Z80
 {
 public:
 	Z80();
 	bool LoadCartridge(std::string path);
 	void Init();
-	uint8_t GetHiRegister(uint16_t reg);
-	uint8_t GetLoRegister(uint16_t reg);
 private:
 	uint8_t ReadMem(uint16_t addr);
 	void WriteMem(uint16_t addr, uint8_t data);
+	uint8_t GetHiRegister(uint16_t reg);
+	uint8_t GetLoRegister(uint16_t reg);
+	void SetFlag(int bit, bool value);
+	bool GetFlag(int bit);
 	void Cycle();
 	uint8_t Fetch();
 	// OPCODES
@@ -53,10 +60,10 @@ private:
 		3 - HL
 
 		Only the first 4 most significant bit of F is used
-		Bit 7: Zero flag(Z)
-		Bit 6: Subtract flag(N)
-		Bit 5: Half carry flag(H)
-		Bit 4: Carry flag(C)
+		Bit 7(3): Zero flag(Z)
+		Bit 6(2): Subtract flag(N)
+		Bit 5(1): Half carry flag(H)
+		Bit 4(0): Carry flag(C)
 	*/
 	uint16_t registers[4];
 	uint16_t sp;

@@ -45,16 +45,6 @@ void Z80::Init()
 	memset(&screen, 0, sizeof(screen));
 }
 
-uint8_t Z80::GetHiRegister(uint16_t reg)
-{
-	return reg >> 8;
-}
-
-uint8_t Z80::GetLoRegister(uint16_t reg)
-{
-	return reg & 0x00ff;
-}
-
 uint8_t Z80::ReadMem(uint16_t addr)
 {
 	if(addr >= 0 && addr <= 0xbfff)
@@ -69,6 +59,38 @@ void Z80::WriteMem(uint16_t addr, uint8_t data)
 	{
 		memory[addr] = data;
 	}
+}
+
+uint8_t Z80::GetHiRegister(uint16_t reg)
+{
+	return reg >> 8;
+}
+
+uint8_t Z80::GetLoRegister(uint16_t reg)
+{
+	return reg & 0x00ff;
+}
+
+void Z80::SetFlag(int bit, bool value)
+{
+	uint8_t f = GetLoRegister(registers[AF]);
+	uint8_t setter = 4 << bit;
+	if(value)
+	{
+		f |= setter;
+	}
+	else
+	{
+		setter ^= 0xff;
+		f &= setter;
+	}
+}
+
+bool Z80::GetFlag(int bit)
+{
+	uint8_t f = GetLoRegister(registers[AF]);
+	uint8_t setter = 4 << bit;
+	return f & setter;
 }
 
 void Z80::Cycle()
@@ -102,17 +124,15 @@ void Z80::Pop(uint16_t &reg)
 
 void Z80::LD8(uint16_t &reg, std::string pos, uint8_t data)
 {
-	uint16_t data;
+	uint8_t r = GetHiRegister(reg);
+	uint16_t d = data;
 	if(pos == "hi")
 	{
-		reg &= 0x00ff;
-		data <<= 8;
+		r = GetLoRegister(reg);
+		d <<= 8;
 	}
-	else if(pos == "lo")
-	{
-		reg &= 0xff00;
-	}
-	reg |= data;
+	r |= d;
+	reg = r;
 }
 
 void Z80::LD8(uint16_t addr, uint8_t data)
@@ -127,37 +147,28 @@ void Z80::LD16(uint16_t &reg, uint16_t data)
 
 void Z80::Add8(uint8_t data, bool carry)
 {
-	uint8_t f = registers[AF] & 0x00ff;
-	uint8_t a = (registers[AF] & 0xff00) >> 8;
+	uint8_t f = GetLoRegister(registers[AF]);
+	uint8_t a = GetHiRegister(registers[AF]);
+	SetFlag(Z, false);
+	SetFlag(N, false);
+	SetFlag(H, false);
+	SetFlag(C, false);
 	if(carry)
 	{
-		data += (f & 0b00010000);
+		data += GetFlag(C);
 	}
 	if((((a & 0xf) + (data & 0xf)) & 0x10) == 0x10)
 	{
-		f |= 0b00100000;
-	}
-	else
-	{
-		f &= 0b11011111;
+		SetFlag(H, true);
 	}
 	a += data;
 	if(a > 255)
 	{
-		f |= 0b00010000;
+		SetFlag(C, true);
 	}
-	else
+	else if(a == 0)
 	{
-		if(a == 0)
-		{
-			f |= 0b10000000;
-		}
-		else
-		{
-			f &= 0b01111111;
-		}
-		f &= 0b11101111;
+		SetFlag(Z, true);
 	}
-	f |= 0b01000000;
 }
 
