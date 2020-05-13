@@ -9,10 +9,10 @@ constexpr int BC = 1;
 constexpr int DE = 2;
 constexpr int HL = 3;
 
-constexpr int Z = 3;
-constexpr int N = 2;
-constexpr int H = 1;
-constexpr int C = 0;
+constexpr int FLAG_Z = 3;
+constexpr int FLAG_N = 2;
+constexpr int FLAG_H = 1;
+constexpr int FLAG_C = 0;
 
 class Z80
 {
@@ -25,6 +25,8 @@ private:
 	void WriteMem(uint16_t addr, uint8_t data);
 	uint8_t GetHiRegister(uint16_t reg);
 	uint8_t GetLoRegister(uint16_t reg);
+	void SetHiRegister(uint16_t &reg, uint8_t data);
+	void SetLoRegister(uint16_t &reg, uint8_t data);
 	void SetFlag(int bit, bool value);
 	bool GetFlag(int bit);
 	void Cycle();
@@ -52,6 +54,7 @@ private:
 	void LD8(uint16_t addr, uint8_t data);
 	void LD16(uint16_t &rr1, uint16_t data);
 	void Add8(uint8_t data, bool carry);
+	void Sub8(uint8_t data, bool carry);
 	/*
 		Registers
 		0 - AF

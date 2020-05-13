@@ -71,6 +71,21 @@ uint8_t Z80::GetLoRegister(uint16_t reg)
 	return reg & 0x00ff;
 }
 
+void Z80::SetHiRegister(uint16_t &reg, uint8_t data)
+{
+	uint16_t hi = data;
+	hi <<= 8;
+	uint8_t lo = GetLoRegister(reg);
+	reg = hi | lo;
+}
+
+void Z80::SetLoRegister(uint16_t &reg, uint8_t data)
+{
+	uint16_t hi = GetHiRegister(reg);
+	hi <<= 8;
+	reg = hi | data;
+}
+
 void Z80::SetFlag(int bit, bool value)
 {
 	uint8_t f = GetLoRegister(registers[AF]);
@@ -147,28 +162,32 @@ void Z80::LD16(uint16_t &reg, uint16_t data)
 
 void Z80::Add8(uint8_t data, bool carry)
 {
+	uint16_t a = GetHiRegister(registers[AF]);
 	uint8_t f = GetLoRegister(registers[AF]);
-	uint8_t a = GetHiRegister(registers[AF]);
-	SetFlag(Z, false);
-	SetFlag(N, false);
-	SetFlag(H, false);
-	SetFlag(C, false);
 	if(carry)
 	{
-		data += GetFlag(C);
-	}
-	if((((a & 0xf) + (data & 0xf)) & 0x10) == 0x10)
-	{
-		SetFlag(H, true);
+		data += GetFlag(FLAG_C);
 	}
 	a += data;
-	if(a > 255)
+	SetFlag(FLAG_Z, a == 0);
+	SetFlag(FLAG_N, false);
+	SetFlag(FLAG_H, (((a & 0xf) + (data & 0xf)) & 0x10) == 0x10);
+	SetFlag(FLAG_C, a > 255);
+	SetHiRegister(registers[AF], (uint8_t) a);
+}
+
+void Z80::Sub8(uint8_t data, bool carry)
+{
+	uint8_t a = GetHiRegister(registers[AF]);
+	if(carry)
 	{
-		SetFlag(C, true);
+		data += GetFlag(FLAG_C);
 	}
-	else if(a == 0)
-	{
-		SetFlag(Z, true);
-	}
+	a -= data;
+	SetFlag(FLAG_Z, a == 0);
+	SetFlag(FLAG_N, 1);
+	SetFlag(FLAG_H, ((a & 0xf) - (data & 0xf)) < 0);
+	SetFlag(FLAG_C, a < 0);
+	SetHiRegister(registers[AF], (uint8_t) a);
 }
 
