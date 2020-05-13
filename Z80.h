@@ -54,6 +54,7 @@ private:
 	void LD8(uint16_t addr, uint8_t data);
 	void LD16(uint16_t &rr1, uint16_t data);
 	void ADD8(uint8_t data, bool carry);
+	void ADD16(uint16_t reg);
 	void SUB(uint8_t data, bool carry);
 	void AND(uint8_t data);
 	void XOR(uint8_t data);

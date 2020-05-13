@@ -175,6 +175,11 @@ void Z80::ADD8(uint8_t data, bool carry)
 	SetHiRegister(registers[AF], (uint8_t) a);
 }
 
+void Z80::ADD16(uint16_t reg)
+{
+	registers[HL] += reg;
+}
+
 void Z80::SUB(uint8_t data, bool carry)
 {
 	uint8_t a = GetHiRegister(registers[AF]);
