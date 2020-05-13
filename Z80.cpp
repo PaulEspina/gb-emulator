@@ -139,12 +139,20 @@ void Z80::POP(uint16_t &reg)
 
 void Z80::LD8(uint16_t &reg, std::string pos, uint8_t data)
 {
-	uint8_t r = GetHiRegister(reg);
+	uint8_t r = 0;
 	uint16_t d = data;
 	if(pos == "hi")
 	{
 		r = GetLoRegister(reg);
 		d <<= 8;
+	}
+	else if(pos == "lo")
+	{
+		r = GetHiRegister(reg);
+	}
+	else
+	{
+		std::cout << "ERROR:LD8::INVALID_POS\n";
 	}
 	r |= d;
 	reg = r;
@@ -238,24 +246,64 @@ void Z80::CP(uint8_t data)
 	SetFlag(FLAG_C, a < 0);
 }
 
-void Z80::INC(uint8_t &reg)
+void Z80::INC8(uint8_t &reg, std::string pos)
 {
-	reg++;
+	uint16_t h = GetHiRegister(reg);
+	uint8_t l = GetLoRegister(reg);
+	if(pos == "hi")
+	{
+		h++;
+	}
+	else if(pos == "lo")
+	{
+		l++;
+	}
+	else
+	{
+		std::cout << "ERROR:LD8::INVALID_POS\n";
+	}
+	h |= l;
+	reg = h;
 }
 
-void Z80::INC(uint16_t addr)
+void Z80::INC8(uint16_t addr)
 {
 	WriteMem(addr, ReadMem(addr) + 1);
 }
 
-void Z80::DEC(uint8_t &reg)
+void Z80::INC16(uint16_t &reg)
 {
-	reg--;
+	reg++;
 }
 
-void Z80::DEC(uint16_t addr)
+void Z80::DEC8(uint8_t &reg, std::string pos)
+{
+	uint16_t h = GetHiRegister(reg);
+	uint8_t l = GetLoRegister(reg);
+	if(pos == "hi")
+	{
+		h--;
+	}
+	else if(pos == "lo")
+	{
+		l--;
+	}
+	else
+	{
+		std::cout << "ERROR:LD8::INVALID_POS\n";
+	}
+	h |= l;
+	reg = h;
+}
+
+void Z80::DEC8(uint16_t addr)
 {
 	WriteMem(addr, ReadMem(addr) - 1);
+}
+
+void Z80::DEC16(uint16_t &reg)
+{
+	reg--;
 }
 
 
