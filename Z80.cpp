@@ -127,12 +127,12 @@ uint8_t Z80::Fetch()
 
 /////////////////////////////////////////////////////////////
 
-void Z80::Push(uint16_t data)
+void Z80::PUSH(uint16_t data)
 {
 	WriteMem(sp--, data);
 }
 
-void Z80::Pop(uint16_t &reg)
+void Z80::POP(uint16_t &reg)
 {
 	reg = ReadMem(--sp);
 }
@@ -160,7 +160,7 @@ void Z80::LD16(uint16_t &reg, uint16_t data)
 	reg = data;
 }
 
-void Z80::Add8(uint8_t data, bool carry)
+void Z80::ADD8(uint8_t data, bool carry)
 {
 	uint16_t a = GetHiRegister(registers[AF]);
 	if(carry)
@@ -175,7 +175,7 @@ void Z80::Add8(uint8_t data, bool carry)
 	SetHiRegister(registers[AF], (uint8_t) a);
 }
 
-void Z80::Sub(uint8_t data, bool carry)
+void Z80::SUB(uint8_t data, bool carry)
 {
 	uint8_t a = GetHiRegister(registers[AF]);
 	if(carry)
@@ -190,7 +190,7 @@ void Z80::Sub(uint8_t data, bool carry)
 	SetHiRegister(registers[AF], (uint8_t) a);
 }
 
-void Z80::And(uint8_t data)
+void Z80::AND(uint8_t data)
 {
 	uint16_t a = GetHiRegister(registers[AF]);
 	a &= data;
@@ -201,7 +201,7 @@ void Z80::And(uint8_t data)
 	SetHiRegister(registers[AF], (uint8_t) a);
 }
 
-void Z80::Xor(uint8_t data)
+void Z80::XOR(uint8_t data)
 {
 	uint16_t a = GetHiRegister(registers[AF]);
 	a ^= data;
@@ -212,7 +212,7 @@ void Z80::Xor(uint8_t data)
 	SetHiRegister(registers[AF], (uint8_t) a);
 }
 
-void Z80::Or(uint8_t data)
+void Z80::OR(uint8_t data)
 {
 	uint16_t a = GetHiRegister(registers[AF]);
 	a |= data;
@@ -221,5 +221,15 @@ void Z80::Or(uint8_t data)
 	SetFlag(FLAG_H, 0);
 	SetFlag(FLAG_C, 0);
 	SetHiRegister(registers[AF], (uint8_t) a);
+}
+
+void Z80::CP(uint8_t data)
+{
+	uint8_t a = GetHiRegister(registers[AF]);
+	a -= data;
+	SetFlag(FLAG_Z, a == 0);
+	SetFlag(FLAG_N, 1);
+	SetFlag(FLAG_H, ((a & 0xf) - (data & 0xf)) < 0);
+	SetFlag(FLAG_C, a < 0);
 }
 

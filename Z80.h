@@ -48,16 +48,17 @@ private:
 	//void ExD0(); void ExD1(); void ExD2();/*/////////*/ void ExD4(); void ExD5(); void ExD6(); void ExD7(); void ExD8(); void ExD9(); void ExDA();/*/////////*/ void ExDC();/*/////////*/ void ExDE(); void ExDF();
 	//void ExE0(); void ExE1(); void ExE2();/*/////////*//*/////////*/ void ExE5(); void ExE6(); void ExE7(); void ExE8(); void ExE9(); void ExEA();/*/////////*//*/////////*//*/////////*/ void ExEE(); void ExEF();
 	//void ExF0(); void ExF1(); void ExF2(); void ExF3();/*/////////*/ void ExF5(); void ExF6(); void ExF7(); void ExF8(); void ExF9(); void ExFA(); void ExFB();/*/////////*//*/////////*/ void ExFE(); void ExFF();
-	void Push(uint16_t data);
-	void Pop(uint16_t &reg);
+	void PUSH(uint16_t data);
+	void POP(uint16_t &reg);
 	void LD8(uint16_t &reg, std::string pos, uint8_t data);
 	void LD8(uint16_t addr, uint8_t data);
 	void LD16(uint16_t &rr1, uint16_t data);
-	void Add8(uint8_t data, bool carry);
-	void Sub(uint8_t data, bool carry);
-	void And(uint8_t data);
-	void Xor(uint8_t data);
-	void Or(uint8_t data);
+	void ADD8(uint8_t data, bool carry);
+	void SUB(uint8_t data, bool carry);
+	void AND(uint8_t data);
+	void XOR(uint8_t data);
+	void OR(uint8_t data);
+	void CP(uint8_t data);
 	/*
 		Registers
 		0 - AF
