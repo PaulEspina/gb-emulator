@@ -59,6 +59,11 @@ private:
 	void XOR(uint8_t data);
 	void OR(uint8_t data);
 	void CP(uint8_t data);
+	void INC(uint8_t &reg);
+	void INC(uint16_t addr);
+	void DEC(uint8_t &reg);
+	void DEC(uint16_t addr);
+	void DAA();
 	/*
 		Registers
 		0 - AF

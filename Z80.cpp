@@ -233,3 +233,57 @@ void Z80::CP(uint8_t data)
 	SetFlag(FLAG_C, a < 0);
 }
 
+void Z80::INC(uint8_t &reg)
+{
+	reg++;
+}
+
+void Z80::INC(uint16_t addr)
+{
+	WriteMem(addr, ReadMem(addr) + 1);
+}
+
+void Z80::DEC(uint8_t &reg)
+{
+	reg--;
+}
+
+void Z80::DEC(uint16_t addr)
+{
+	WriteMem(addr, ReadMem(addr) - 1);
+}
+
+
+void Z80::DAA()
+{
+	uint8_t a = GetHiRegister(registers[AF]);
+	uint8_t hn = (a & 0xf0) >> 4;
+	uint8_t ln = a & 0x0f;
+	if(!GetFlag(FLAG_N))
+	{
+		if(GetFlag(FLAG_H) || (a & 0xf) > 9)
+		{
+			a += 0x06;
+		}
+		if(GetFlag(FLAG_C) || a > 0x9f)
+		{
+			a += 0x60;
+		}
+	}
+	else
+	{
+		if(GetFlag(FLAG_H))
+		{
+			a = (a - 6) & 0xFF;
+		}
+		if(GetFlag(FLAG_C))
+		{
+			a -= 0x60;
+		}
+	}
+	SetFlag(FLAG_Z, a == 0);
+	SetFlag(FLAG_H, false);
+	SetFlag(FLAG_C, (a & 0x100) == 0x100);
+	SetHiRegister(registers[AF], (uint8_t) a)
+}
+
