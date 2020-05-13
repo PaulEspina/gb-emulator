@@ -54,7 +54,8 @@ private:
 	void LD8(uint16_t addr, uint8_t data);
 	void LD16(uint16_t &rr1, uint16_t data);
 	void Add8(uint8_t data, bool carry);
-	void Sub8(uint8_t data, bool carry);
+	void Sub(uint8_t data, bool carry);
+	void And(uint8_t data);
 	/*
 		Registers
 		0 - AF

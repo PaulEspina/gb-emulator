@@ -163,7 +163,6 @@ void Z80::LD16(uint16_t &reg, uint16_t data)
 void Z80::Add8(uint8_t data, bool carry)
 {
 	uint16_t a = GetHiRegister(registers[AF]);
-	uint8_t f = GetLoRegister(registers[AF]);
 	if(carry)
 	{
 		data += GetFlag(FLAG_C);
@@ -176,7 +175,7 @@ void Z80::Add8(uint8_t data, bool carry)
 	SetHiRegister(registers[AF], (uint8_t) a);
 }
 
-void Z80::Sub8(uint8_t data, bool carry)
+void Z80::Sub(uint8_t data, bool carry)
 {
 	uint8_t a = GetHiRegister(registers[AF]);
 	if(carry)
@@ -188,6 +187,17 @@ void Z80::Sub8(uint8_t data, bool carry)
 	SetFlag(FLAG_N, 1);
 	SetFlag(FLAG_H, ((a & 0xf) - (data & 0xf)) < 0);
 	SetFlag(FLAG_C, a < 0);
+	SetHiRegister(registers[AF], (uint8_t) a);
+}
+
+void Z80::And(uint8_t data)
+{
+	uint16_t a = GetHiRegister(registers[AF]);
+	a &= data;
+	SetFlag(FLAG_Z, a == 0);
+	SetFlag(FLAG_N, 0);
+	SetFlag(FLAG_H, 1);
+	SetFlag(FLAG_C, 0);
 	SetHiRegister(registers[AF], (uint8_t) a);
 }
 
