@@ -64,6 +64,7 @@ private:
 	void DEC(uint8_t &reg);
 	void DEC(uint16_t addr);
 	void DAA();
+	void CPL();
 	/*
 		Registers
 		0 - AF

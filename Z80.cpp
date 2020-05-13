@@ -184,7 +184,7 @@ void Z80::SUB(uint8_t data, bool carry)
 	}
 	a -= data;
 	SetFlag(FLAG_Z, a == 0);
-	SetFlag(FLAG_N, 1);
+	SetFlag(FLAG_N, true);
 	SetFlag(FLAG_H, ((a & 0xf) - (data & 0xf)) < 0);
 	SetFlag(FLAG_C, a < 0);
 	SetHiRegister(registers[AF], (uint8_t) a);
@@ -195,9 +195,9 @@ void Z80::AND(uint8_t data)
 	uint16_t a = GetHiRegister(registers[AF]);
 	a &= data;
 	SetFlag(FLAG_Z, a == 0);
-	SetFlag(FLAG_N, 0);
-	SetFlag(FLAG_H, 1);
-	SetFlag(FLAG_C, 0);
+	SetFlag(FLAG_N, false);
+	SetFlag(FLAG_H, true);
+	SetFlag(FLAG_C, false);
 	SetHiRegister(registers[AF], (uint8_t) a);
 }
 
@@ -206,9 +206,9 @@ void Z80::XOR(uint8_t data)
 	uint16_t a = GetHiRegister(registers[AF]);
 	a ^= data;
 	SetFlag(FLAG_Z, a == 0);
-	SetFlag(FLAG_N, 0);
-	SetFlag(FLAG_H, 0);
-	SetFlag(FLAG_C, 0);
+	SetFlag(FLAG_N, false);
+	SetFlag(FLAG_H, false);
+	SetFlag(FLAG_C, false);
 	SetHiRegister(registers[AF], (uint8_t) a);
 }
 
@@ -217,9 +217,9 @@ void Z80::OR(uint8_t data)
 	uint16_t a = GetHiRegister(registers[AF]);
 	a |= data;
 	SetFlag(FLAG_Z, a == 0);
-	SetFlag(FLAG_N, 0);
-	SetFlag(FLAG_H, 0);
-	SetFlag(FLAG_C, 0);
+	SetFlag(FLAG_N, false);
+	SetFlag(FLAG_H, false);
+	SetFlag(FLAG_C, false);
 	SetHiRegister(registers[AF], (uint8_t) a);
 }
 
@@ -228,7 +228,7 @@ void Z80::CP(uint8_t data)
 	uint8_t a = GetHiRegister(registers[AF]);
 	a -= data;
 	SetFlag(FLAG_Z, a == 0);
-	SetFlag(FLAG_N, 1);
+	SetFlag(FLAG_N, true);
 	SetFlag(FLAG_H, ((a & 0xf) - (data & 0xf)) < 0);
 	SetFlag(FLAG_C, a < 0);
 }
@@ -284,6 +284,15 @@ void Z80::DAA()
 	SetFlag(FLAG_Z, a == 0);
 	SetFlag(FLAG_H, false);
 	SetFlag(FLAG_C, (a & 0x100) == 0x100);
-	SetHiRegister(registers[AF], (uint8_t) a)
+	SetHiRegister(registers[AF], (uint8_t) a);
+}
+
+void Z80::CPL()
+{
+	uint8_t a = GetHiRegister(registers[AF]);
+	a ^= 0xff;
+	SetFlag(FLAG_N, true);
+	SetFlag(FLAG_H, true);
+	SetHiRegister(registers[AF], (uint8_t) a);
 }
 
