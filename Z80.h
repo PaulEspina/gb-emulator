@@ -112,6 +112,10 @@ private:
 	void SWAP(uint16_t &reg, std::string pos);
 	// Swap the data in memory at (HL)'s low/hi nibble.
 	void SWAP();
+	// Shift reg(pos can be "hi" or "lo") right logically.
+	void SRL(uint16_t &reg, std::string pos);
+	// Shift the data in memory at (HL) right logically.
+	void SRL();
 	/*
 		Registers
 		0 - AF
