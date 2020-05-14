@@ -60,13 +60,13 @@ private:
 	// Like SUB but accumulator is not modified, only the flags.
 	void CP(uint8_t data);
 	// Increments reg(pos can be "hi" or "lo").
-	void INC8(uint8_t &reg, std::string pos);
+	void INC8(uint16_t &reg, std::string pos);
 	// Increments the value of memory in addr.
 	void INC8(uint16_t addr);
 	// Increments reg.
 	void INC16(uint16_t &reg);
 	// Decrements reg(pos can be "hi" or "lo").
-	void DEC8(uint8_t &reg, std::string pos);
+	void DEC8(uint16_t &reg, std::string pos);
 	// Decrements the value of memory in addr.
 	void DEC8(uint16_t addr);
 	// Decrements reg.
@@ -83,6 +83,10 @@ private:
 	void RRCA();
 	// Rotate accumulator right through carry.
 	void RRA();
+	// Rotate reg(pos can be "hi" or "lo") left.
+	void RLC(uint16_t &reg, std::string pos);
+	// Rotate the data in memory at (HL) left.
+	void RLC();
 	/*
 		Registers
 		0 - AF

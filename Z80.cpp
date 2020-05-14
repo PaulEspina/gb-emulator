@@ -127,47 +127,48 @@ uint8_t Z80::Fetch()
 
 /////////////////////////////////////////////////////////////
 
+// Push data to stack.
 void Z80::PUSH(uint16_t data)
 {
 	WriteMem(sp--, data);
 }
 
+// Pop data from stack to reg.
 void Z80::POP(uint16_t &reg)
 {
 	reg = ReadMem(--sp);
 }
 
+// Move data to reg(pos can be "hi" or "lo").
 void Z80::LD8(uint16_t &reg, std::string pos, uint8_t data)
 {
-	uint8_t r = 0;
-	uint16_t d = data;
 	if(pos == "hi")
 	{
-		r = GetLoRegister(reg);
-		d <<= 8;
+		SetHiRegister(reg, data);
 	}
 	else if(pos == "lo")
 	{
-		r = GetHiRegister(reg);
+		SetLoRegister(reg, data);
 	}
 	else
 	{
 		std::cout << "ERROR:LD8::INVALID_POS\n";
 	}
-	r |= d;
-	reg = r;
 }
 
+// Move data to memory in addr.
 void Z80::LD8(uint16_t addr, uint8_t data)
 {
 	WriteMem(addr, data);
 }
 
+// Move data to reg.
 void Z80::LD16(uint16_t &reg, uint16_t data)
 {
 	reg = data;
 }
 
+// Add data to accumulator. If carry is true, the value in FLAG_C is also added.
 void Z80::ADD8(uint8_t data, bool carry)
 {
 	uint16_t a = GetHiRegister(registers[AF]);
@@ -183,16 +184,19 @@ void Z80::ADD8(uint8_t data, bool carry)
 	SetHiRegister(registers[AF], (uint8_t) a);
 }
 
+// Add reg to HL.
 void Z80::ADD16(uint16_t reg)
 {
 	registers[HL] += reg;
 }
 
+// Add d(signed 8-bit integer) to SP.
 void Z80::ADD16(int8_t d)
 {
 	sp += d;
 }
 
+// Subtract data to accumulator. If carry is true, the value in FLAG_C is also subtracted.
 void Z80::SUB(uint8_t data, bool carry)
 {
 	uint8_t a = GetHiRegister(registers[AF]);
@@ -208,6 +212,7 @@ void Z80::SUB(uint8_t data, bool carry)
 	SetHiRegister(registers[AF], (uint8_t) a);
 }
 
+// Bitwise & data to accumulator.
 void Z80::AND(uint8_t data)
 {
 	uint16_t a = GetHiRegister(registers[AF]);
@@ -219,6 +224,7 @@ void Z80::AND(uint8_t data)
 	SetHiRegister(registers[AF], (uint8_t) a);
 }
 
+// Bitwise ^ data to accumulator.
 void Z80::XOR(uint8_t data)
 {
 	uint16_t a = GetHiRegister(registers[AF]);
@@ -230,6 +236,7 @@ void Z80::XOR(uint8_t data)
 	SetHiRegister(registers[AF], (uint8_t) a);
 }
 
+// Bitwise | data to accumulator.
 void Z80::OR(uint8_t data)
 {
 	uint16_t a = GetHiRegister(registers[AF]);
@@ -241,6 +248,7 @@ void Z80::OR(uint8_t data)
 	SetHiRegister(registers[AF], (uint8_t) a);
 }
 
+// Like SUB but accumulator is not modified, only the flags.
 void Z80::CP(uint8_t data)
 {
 	uint8_t a = GetHiRegister(registers[AF]);
@@ -251,67 +259,71 @@ void Z80::CP(uint8_t data)
 	SetFlag(FLAG_C, a < 0);
 }
 
-void Z80::INC8(uint8_t &reg, std::string pos)
+// Increments reg(pos can be "hi" or "lo").
+void Z80::INC8(uint16_t &reg, std::string pos)
 {
-	uint16_t h = GetHiRegister(reg);
-	uint8_t l = GetLoRegister(reg);
+	uint16_t r = 0;
 	if(pos == "hi")
 	{
-		h++;
+		r = GetHiRegister(reg);
+		SetHiRegister(reg, ++r);
 	}
 	else if(pos == "lo")
 	{
-		l++;
+		r = GetLoRegister(reg);
+		SetLoRegister(reg, ++r);
 	}
 	else
 	{
 		std::cout << "ERROR:LD8::INVALID_POS\n";
 	}
-	h |= l;
-	reg = h;
 }
 
+// Increments the value of memory in addr.
 void Z80::INC8(uint16_t addr)
 {
 	WriteMem(addr, ReadMem(addr) + 1);
 }
 
+// Increments reg.
 void Z80::INC16(uint16_t &reg)
 {
 	reg++;
 }
 
-void Z80::DEC8(uint8_t &reg, std::string pos)
+// Decrements reg(pos can be "hi" or "lo").
+void Z80::DEC8(uint16_t &reg, std::string pos)
 {
-	uint16_t h = GetHiRegister(reg);
-	uint8_t l = GetLoRegister(reg);
+	uint16_t r = 0;
 	if(pos == "hi")
 	{
-		h--;
+		r = GetHiRegister(reg);
+		SetHiRegister(reg, --r);
 	}
 	else if(pos == "lo")
 	{
-		l--;
+		r = GetLoRegister(reg);
+		SetLoRegister(reg, --l);
 	}
 	else
 	{
 		std::cout << "ERROR:LD8::INVALID_POS\n";
 	}
-	h |= l;
-	reg = h;
 }
 
+// Decrements the value of memory in addr.
 void Z80::DEC8(uint16_t addr)
 {
 	WriteMem(addr, ReadMem(addr) - 1);
 }
 
+// Decrements reg.
 void Z80::DEC16(uint16_t &reg)
 {
 	reg--;
 }
 
-
+// Decimal adjust the accumulator.
 void Z80::DAA()
 {
 	uint8_t a = GetHiRegister(registers[AF]);
@@ -345,6 +357,7 @@ void Z80::DAA()
 	SetHiRegister(registers[AF], (uint8_t) a);
 }
 
+// Bitwise ^ the accumulator to 0xff.
 void Z80::CPL()
 {
 	uint8_t a = GetHiRegister(registers[AF]);
@@ -354,6 +367,7 @@ void Z80::CPL()
 	SetHiRegister(registers[AF], (uint8_t) a);
 }
 
+// Rotate accumulator left.
 void Z80::RLCA()
 {
 	uint8_t a = GetHiRegister(registers[AF]);
@@ -366,6 +380,7 @@ void Z80::RLCA()
 	SetFlag(FLAG_C, c);
 }
 
+// Rotate accumulator left through carry.
 void Z80::RLA()
 {
 	uint8_t a = GetHiRegister(registers[AF]);
@@ -378,6 +393,7 @@ void Z80::RLA()
 	SetFlag(FLAG_C, c);
 }
 
+// Rotate accumulator right.
 void Z80::RRCA()
 {
 	uint8_t a = GetHiRegister(registers[AF]);
@@ -391,6 +407,7 @@ void Z80::RRCA()
 	SetFlag(FLAG_C, c);
 }
 
+// Rotate accumulator right through carry.
 void Z80::RRA()
 {
 	uint8_t a = GetHiRegister(registers[AF]);
@@ -402,4 +419,43 @@ void Z80::RRA()
 	SetFlag(FLAG_N, false);
 	SetFlag(FLAG_H, false);
 	SetFlag(FLAG_C, c);
+}
+
+// Rotate reg(pos can be "hi" or "lo") left.
+void Z80::RLC(uint16_t &reg, std::string pos)
+{
+	uint8_t r = 0;
+	uint8_t c = (r & 0x80) >> 7;
+	if(pos == "hi")
+	{
+		r = GetHiRegister(reg);
+		r <<= 1;
+		r |= c;
+		SetHiRegister(reg, r);
+	}
+	else if(pos == "lo")
+	{
+		r = GetLoRegister(reg);
+		r <<= 1;
+		r |= c;
+		SetLoRegister(reg, r);
+	}
+	else
+	{
+		std::cout << "ERROR:LD8::INVALID_POS\n";
+	}
+	SetFlag(FLAG_Z, r == 0);
+	SetFlag(FLAG_N, false);
+	SetFlag(FLAG_H, false);
+	SetFlag(FLAG_C, c);
+}
+
+// Rotate the data in memory at (HL) left.
+void Z80::RLC()
+{
+	uint8_t data = memory[registers[HL]];
+	uint8_t c = (data & 0x80) >> 7;
+	data <<= 1;
+	data |= c;
+	memory[registers[HL]] = data;
 }
