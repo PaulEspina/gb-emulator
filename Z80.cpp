@@ -354,4 +354,14 @@ void Z80::CPL()
 	SetHiRegister(registers[AF], (uint8_t) a);
 }
 
-//ADD16
+void Z80::RLCA()
+{
+	uint8_t a = GetHiRegister(registers[AF]);
+	uint8_t c = (a & 0x80) >> 7;
+	a <<= 1;
+	a |= c;
+	SetFlag(FLAG_Z, false);
+	SetFlag(FLAG_N, false);
+	SetFlag(FLAG_H, false);
+	SetFlag(FLAG_C, c);
+}

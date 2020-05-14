@@ -75,6 +75,8 @@ private:
 	void DAA();
 	// Bitwise ^ the accumulator to 0xff.
 	void CPL();
+	// Rotate accumulator left.
+	void RLCA();
 	/*
 		Registers
 		0 - AF
