@@ -96,6 +96,10 @@ private:
 	void RRC(uint16_t &reg, std::string pos);
 	// Rotate the data in memory at (HL) right.
 	void RRC();
+	// Rotate reg(pos can be "hi" or "lo") right through carry.
+	void RR(uint16_t &reg, std::string pos);
+	// Rotate the data in memory at (HL) right through carry.
+	void RR();
 	/*
 		Registers
 		0 - AF
