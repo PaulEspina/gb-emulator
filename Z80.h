@@ -47,6 +47,8 @@ private:
 	void ADD8(uint8_t data, bool carry);
 	// Add reg to HL.
 	void ADD16(uint16_t reg);
+	// Add d(signed 8-bit integer) to SP.
+	void ADD16(int8_t d);
 	// Subtract data to accumulator. If carry is true, the value in FLAG_C is also subtracted.
 	void SUB(uint8_t data, bool carry);
 	// Bitwise & data to accumulator.
