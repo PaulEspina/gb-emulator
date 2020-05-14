@@ -397,9 +397,8 @@ void Z80::RLA()
 void Z80::RRCA()
 {
 	uint8_t a = GetHiRegister(registers[AF]);
-	uint8_t c = (a & 0x01);
+	uint8_t c = (a & 0x01) << 7;
 	a >>= 1;
-	c <<= 7;
 	a |= c;
 	SetFlag(FLAG_Z, false);
 	SetFlag(FLAG_N, false);
@@ -411,9 +410,8 @@ void Z80::RRCA()
 void Z80::RRA()
 {
 	uint8_t a = GetHiRegister(registers[AF]);
-	uint8_t c = (a & 0x01);
+	uint8_t c = (a & 0x01) << 7;
 	a >>= 1;
-	c <<= 7;
 	a |= GetFlag(FLAG_C);
 	SetFlag(FLAG_Z, false);
 	SetFlag(FLAG_N, false);
@@ -500,6 +498,49 @@ void Z80::RL()
 	uint8_t c = (data & 0x80) >> 7;
 	data <<= 1;
 	data |= GetFlag(FLAG_C);
+	memory[registers[HL]] = data;
+	SetFlag(FLAG_Z, data == 0);
+	SetFlag(FLAG_N, false);
+	SetFlag(FLAG_H, false);
+	SetFlag(FLAG_C, c);
+}
+
+// Rotate reg(pos can be "hi" or "lo") right.
+void Z80::RRC(uint16_t &reg, std::string pos)
+{
+	uint8_t r = 0;
+	uint8_t c = (r & 0x01) << 7;
+	if(pos == "hi")
+	{
+		r = GetHiRegister(reg);
+		r >>= 1;
+		r |= c;
+		SetHiRegister(reg, r);
+	}
+	else if(pos == "lo")
+	{
+		r = GetLoRegister(reg);
+		r >>= 1;
+		r |= c;
+		SetLoRegister(reg, r);
+	}
+	else
+	{
+		std::cout << "ERROR:LD8::INVALID_POS\n";
+	}
+	SetFlag(FLAG_Z, r == 0);
+	SetFlag(FLAG_N, false);
+	SetFlag(FLAG_H, false);
+	SetFlag(FLAG_C, c);
+}
+
+// Rotate the data in memory at (HL) right.
+void Z80::RRC()
+{
+	uint8_t data = memory[registers[HL]];
+	uint8_t c = (data & 0x01) << 7;
+	data >>= 1;
+	data |= c;
 	memory[registers[HL]] = data;
 	SetFlag(FLAG_Z, data == 0);
 	SetFlag(FLAG_N, false);
