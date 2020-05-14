@@ -451,11 +451,11 @@ void Z80::RLC(uint16_t &reg, std::string pos)
 // Rotate the data in memory at (HL) left.
 void Z80::RLC()
 {
-	uint8_t data = memory[registers[HL]];
+	uint8_t data = ReadMem(registers[HL]);
 	uint8_t c = (data & 0x80) >> 7;
 	data <<= 1;
 	data |= c;
-	memory[registers[HL]] = data;
+	WriteMem(registers[HL], data);
 	SetFlag(FLAG_Z, data == 0);
 	SetFlag(FLAG_N, false);
 	SetFlag(FLAG_H, false);
@@ -494,11 +494,11 @@ void Z80::RL(uint16_t &reg, std::string pos)
 // Rotate the data in memory at (HL) left through carry.
 void Z80::RL()
 {
-	uint8_t data = memory[registers[HL]];
+	uint8_t data = ReadMem(registers[HL]);
 	uint8_t c = (data & 0x80) >> 7;
 	data <<= 1;
 	data |= GetFlag(FLAG_C);
-	memory[registers[HL]] = data;
+	WriteMem(registers[HL], data);
 	SetFlag(FLAG_Z, data == 0);
 	SetFlag(FLAG_N, false);
 	SetFlag(FLAG_H, false);
@@ -537,11 +537,11 @@ void Z80::RRC(uint16_t &reg, std::string pos)
 // Rotate the data in memory at (HL) right.
 void Z80::RRC()
 {
-	uint8_t data = memory[registers[HL]];
+	uint8_t data = ReadMem(registers[HL]);
 	uint8_t c = (data & 0x01) << 7;
 	data >>= 1;
 	data |= c;
-	memory[registers[HL]] = data;
+	WriteMem(registers[HL], data);
 	SetFlag(FLAG_Z, data == 0);
 	SetFlag(FLAG_N, false);
 	SetFlag(FLAG_H, false);
@@ -580,11 +580,11 @@ void Z80::RR(uint16_t &reg, std::string pos)
 // Rotate the data in memory at (HL) right through carry.
 void Z80::RR()
 {
-	uint8_t data = memory[registers[HL]];
+	uint8_t data = ReadMem(registers[HL]);
 	uint8_t c = (data & 0x01) << 7;
 	data >>= 1;
 	data |= GetFlag(FLAG_C);
-	memory[registers[HL]] = data;
+	WriteMem(registers[HL], data);
 	SetFlag(FLAG_Z, data == 0);
 	SetFlag(FLAG_N, false);
 	SetFlag(FLAG_H, false);
@@ -621,10 +621,10 @@ void Z80::SLA(uint16_t &reg, std::string pos)
 // Shift the data in moemory at (HL) left.
 void Z80::SLA()
 {
-	uint8_t data = memory[registers[HL]];
+	uint8_t data = ReadMem(registers[HL]);
 	uint8_t c = (data & 0x80) >> 7;
 	data <<= 1;
-	memory[registers[HL]] = data;
+	WriteMem(registers[HL], data);
 	SetFlag(FLAG_Z, data == 0);
 	SetFlag(FLAG_N, false);
 	SetFlag(FLAG_H, false);
@@ -664,12 +664,12 @@ void Z80::SRA(uint16_t &reg, std::string pos)
 // Shift the data in memory at (HL) right.
 void Z80::SRA()
 {
-	uint8_t data = memory[registers[HL]];
+	uint8_t data = ReadMem(registers[HL]);
 	uint8_t c = (data & 0x01) << 7;
 	uint8_t b7 = (data & 0x80);
 	data >>= 1;
 	data |= b7;
-	memory[registers[HL]] = data;
+	WriteMem(registers[HL], data);
 	SetFlag(FLAG_Z, data == 0);
 	SetFlag(FLAG_N, false);
 	SetFlag(FLAG_H, false);
@@ -711,11 +711,11 @@ void Z80::SWAP(uint16_t &reg, std::string pos)
 // Swap the data in memory at (HL)'s low/hi nibble.
 void Z80::SWAP()
 {
-	uint8_t data = memory[registers[HL]];
+	uint8_t data = ReadMem(registers[HL]);
 	uint8_t hn = (data & 0xf0) >> 4;
 	uint8_t ln = (data & 0x0f) << 4;
 	data = ln | hn;
-	memory[registers[HL]] = data;
+	WriteMem(registers[HL], data);
 	SetFlag(FLAG_Z, data == 0);
 	SetFlag(FLAG_N, false);
 	SetFlag(FLAG_H, false);
@@ -752,12 +752,114 @@ void Z80::SRL(uint16_t &reg, std::string pos)
 // Shift the data in memory at (HL) right logically.
 void Z80::SRL()
 {
-	uint8_t data = memory[registers[HL]];
+	uint8_t data = ReadMem(registers[HL]);
 	uint8_t c = (data & 0x01) << 7;
 	data >>= 1;
-	memory[registers[HL]] = data;
+	WriteMem(registers[HL], data);
 	SetFlag(FLAG_Z, data == 0);
 	SetFlag(FLAG_N, false);
 	SetFlag(FLAG_H, false);
 	SetFlag(FLAG_C, c);
+}
+
+// Test bit n of reg(pos can be "hi" or "lo").
+void Z80::BIT(uint16_t &reg, std::string pos, int n)
+{
+	uint8_t r = 0;
+	if(pos == "hi")
+	{
+		r = GetHiRegister(reg);
+	}
+	else if(pos == "lo")
+	{
+		r = GetLoRegister(reg);
+	}
+	else
+	{
+		std::cout << "ERROR:BIT::INVALID_POS\n";
+	}
+	uint8_t setter = 1 << n;
+	r &= setter;
+	r >>= n;
+	SetFlag(FLAG_Z, r == 0);
+	SetFlag(FLAG_N, false);
+	SetFlag(FLAG_H, true);
+}
+
+// Test bit n of the data in memory at (HL).
+void Z80::BIT(int n)
+{
+	uint8_t data = ReadMem(registers[HL]);
+	uint8_t setter = 1 << n;
+	data &= setter;
+	data >>= n;
+	SetFlag(FLAG_Z, data == 0);
+	SetFlag(FLAG_N, false);
+	SetFlag(FLAG_H, true);
+}
+
+// Set bit n of reg(pos can be "hi" or "lo").
+void Z80::SET(uint16_t &reg, std::string pos, int n)
+{
+	uint8_t r = 0;
+	uint8_t setter = 1 << n;
+	if(pos == "hi")
+	{
+		r = GetHiRegister(reg);
+		r |= setter;
+		SetHiRegister(reg, r);
+	}
+	else if(pos == "lo")
+	{
+		r = GetLoRegister(reg);
+		r |= setter;
+		SetLoRegister(reg, r);
+	}
+	else
+	{
+		std::cout << "ERROR:SET::INVALID_POS\n";
+	}
+}
+
+// Set bit n of the data in memory at (HL).
+void Z80::SET(int n)
+{
+	uint8_t data = ReadMem(registers[HL]);
+	uint8_t setter = 1 << n;
+	data |= setter;
+	WriteMem(registers[HL], data);
+}
+
+// Reset bin n of reg(pos can be "hi" or "lo").
+void Z80::RES(uint16_t &reg, std::string pos, int n)
+{
+	uint8_t r = 0;
+	uint8_t setter = 1 << n;
+	setter ^= 0xff;
+	if(pos == "hi")
+	{
+		r = GetHiRegister(reg);
+		r &= setter;
+		SetHiRegister(reg, r);
+	}
+	else if(pos == "lo")
+	{
+		r = GetLoRegister(reg);
+		r &= setter;
+		SetLoRegister(reg, r);
+	}
+	else
+	{
+		std::cout << "ERROR:RES::INVALID_POS\n";
+	}
+}
+
+// Reset bit n of the data in memory at (HL).
+void Z80::RES(int n)
+{
+	uint8_t data = ReadMem(registers[HL]);
+	uint8_t setter = 1 << n;
+	setter ^= 0xff;
+	data &= setter;
+	WriteMem(registers[HL], data);
 }

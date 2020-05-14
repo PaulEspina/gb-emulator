@@ -116,6 +116,18 @@ private:
 	void SRL(uint16_t &reg, std::string pos);
 	// Shift the data in memory at (HL) right logically.
 	void SRL();
+	// Test bit n of reg(pos can be "hi" or "lo").
+	void BIT(uint16_t &reg, std::string pos, int n);
+	// Test bit n of the data in memory at (HL).
+	void BIT(int n);
+	// Set bit n of reg(pos can be "hi" or "lo").
+	void SET(uint16_t &reg, std::string pos, int n);
+	// Set bit n of the data in memory at (HL).
+	void SET(int n);
+	// Reset bin n of reg(pos can be "hi" or "lo").
+	void RES(uint16_t &reg, std::string pos, int n);
+	// Reset bit n of the data in memory at (HL).
+	void RES(int n);
 	/*
 		Registers
 		0 - AF
