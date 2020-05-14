@@ -89,7 +89,7 @@ void Z80::SetLoRegister(uint16_t &reg, uint8_t data)
 void Z80::SetFlag(int bit, bool value)
 {
 	uint8_t f = GetLoRegister(registers[AF]);
-	uint8_t setter = 4 << bit;
+	uint8_t setter = 1 << (bit + 4);
 	if(value)
 	{
 		f |= setter;
@@ -104,8 +104,8 @@ void Z80::SetFlag(int bit, bool value)
 bool Z80::GetFlag(int bit)
 {
 	uint8_t f = GetLoRegister(registers[AF]);
-	uint8_t setter = 4 << bit;
-	return f & setter;
+	uint8_t setter = 1 << (bit + 4);
+	return (f & setter) >> (bit + 4);
 }
 
 void Z80::Cycle()
@@ -360,6 +360,18 @@ void Z80::RLCA()
 	uint8_t c = (a & 0x80) >> 7;
 	a <<= 1;
 	a |= c;
+	SetFlag(FLAG_Z, false);
+	SetFlag(FLAG_N, false);
+	SetFlag(FLAG_H, false);
+	SetFlag(FLAG_C, c);
+}
+
+void Z80::RLA()
+{
+	uint8_t a = GetHiRegister(registers[AF]);
+	uint8_t c = (a & 0x80) >> 7;
+	a <<= 1;
+	a |= GetFlag(FLAG_C);
 	SetFlag(FLAG_Z, false);
 	SetFlag(FLAG_N, false);
 	SetFlag(FLAG_H, false);

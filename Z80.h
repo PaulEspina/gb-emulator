@@ -77,6 +77,8 @@ private:
 	void CPL();
 	// Rotate accumulator left.
 	void RLCA();
+	// Rotate accumulator left through carry.
+	void RLA();
 	/*
 		Registers
 		0 - AF
