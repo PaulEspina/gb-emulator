@@ -458,4 +458,51 @@ void Z80::RLC()
 	data <<= 1;
 	data |= c;
 	memory[registers[HL]] = data;
+	SetFlag(FLAG_Z, data == 0);
+	SetFlag(FLAG_N, false);
+	SetFlag(FLAG_H, false);
+	SetFlag(FLAG_C, c);
+}
+
+// Rotate reg(pos can be "hi" or "lo") left through carry.
+void Z80::RL(uint16_t &reg, std::string pos)
+{
+	uint8_t r = 0;
+	uint8_t c = (r & 0x80) >> 7;
+	if(pos == "hi")
+	{
+		r = GetHiRegister(reg);
+		r <<= 1;
+		r |= GetFlag(FLAG_C);
+		SetHiRegister(reg, r);
+	}
+	else if(pos == "lo")
+	{
+		r = GetLoRegister(reg);
+		r <<= 1;
+		r |= GetFlag(FLAG_C);
+		SetLoRegister(reg, r);
+	}
+	else
+	{
+		std::cout << "ERROR:LD8::INVALID_POS\n";
+	}
+	SetFlag(FLAG_Z, r == 0);
+	SetFlag(FLAG_N, false);
+	SetFlag(FLAG_H, false);
+	SetFlag(FLAG_C, c);
+}
+
+// Rotate the data in memory at (HL) left through carry.
+void Z80::RL()
+{
+	uint8_t data = memory[registers[HL]];
+	uint8_t c = (data & 0x80) >> 7;
+	data <<= 1;
+	data |= GetFlag(FLAG_C);
+	memory[registers[HL]] = data;
+	SetFlag(FLAG_Z, data == 0);
+	SetFlag(FLAG_N, false);
+	SetFlag(FLAG_H, false);
+	SetFlag(FLAG_C, c);
 }

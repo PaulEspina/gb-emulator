@@ -32,7 +32,7 @@ private:
 	bool GetFlag(int bit);
 	void Cycle();
 	uint8_t Fetch();
-	// OPCODES
+	/* OPCODES */
 	// Push data to stack.
 	void PUSH(uint16_t data);
 	// Pop data from stack to reg.
@@ -83,10 +83,15 @@ private:
 	void RRCA();
 	// Rotate accumulator right through carry.
 	void RRA();
+	/* PREFIX CB OPCODES */
 	// Rotate reg(pos can be "hi" or "lo") left.
 	void RLC(uint16_t &reg, std::string pos);
 	// Rotate the data in memory at (HL) left.
 	void RLC();
+	// Rotate reg(pos can be "hi" or "lo") left through carry.
+	void RL(uint16_t &reg, std::string pos);
+	// Rotate the data in memory at (HL) left through carry.
+	void RL();
 	/*
 		Registers
 		0 - AF
