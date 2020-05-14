@@ -377,3 +377,29 @@ void Z80::RLA()
 	SetFlag(FLAG_H, false);
 	SetFlag(FLAG_C, c);
 }
+
+void Z80::RRCA()
+{
+	uint8_t a = GetHiRegister(registers[AF]);
+	uint8_t c = (a & 0x01);
+	a >>= 1;
+	c <<= 7;
+	a |= c;
+	SetFlag(FLAG_Z, false);
+	SetFlag(FLAG_N, false);
+	SetFlag(FLAG_H, false);
+	SetFlag(FLAG_C, c);
+}
+
+void Z80::RRA()
+{
+	uint8_t a = GetHiRegister(registers[AF]);
+	uint8_t c = (a & 0x01);
+	a >>= 1;
+	c <<= 7;
+	a |= GetFlag(FLAG_C);
+	SetFlag(FLAG_Z, false);
+	SetFlag(FLAG_N, false);
+	SetFlag(FLAG_H, false);
+	SetFlag(FLAG_C, c);
+}

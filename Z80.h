@@ -79,6 +79,10 @@ private:
 	void RLCA();
 	// Rotate accumulator left through carry.
 	void RLA();
+	// Rotate accumulator right.
+	void RRCA();
+	// Rotate accumulator right through carry.
+	void RRA();
 	/*
 		Registers
 		0 - AF
