@@ -275,7 +275,7 @@ void Z80::INC8(uint16_t &reg, std::string pos)
 	}
 	else
 	{
-		std::cout << "ERROR:LD8::INVALID_POS\n";
+		std::cout << "ERROR:INC8::INVALID_POS\n";
 	}
 }
 
@@ -303,11 +303,11 @@ void Z80::DEC8(uint16_t &reg, std::string pos)
 	else if(pos == "lo")
 	{
 		r = GetLoRegister(reg);
-		SetLoRegister(reg, --l);
+		SetLoRegister(reg, --r);
 	}
 	else
 	{
-		std::cout << "ERROR:LD8::INVALID_POS\n";
+		std::cout << "ERROR:DEC8::INVALID_POS\n";
 	}
 }
 
@@ -440,7 +440,7 @@ void Z80::RLC(uint16_t &reg, std::string pos)
 	}
 	else
 	{
-		std::cout << "ERROR:LD8::INVALID_POS\n";
+		std::cout << "ERROR:RLC::INVALID_POS\n";
 	}
 	SetFlag(FLAG_Z, r == 0);
 	SetFlag(FLAG_N, false);
@@ -483,7 +483,7 @@ void Z80::RL(uint16_t &reg, std::string pos)
 	}
 	else
 	{
-		std::cout << "ERROR:LD8::INVALID_POS\n";
+		std::cout << "ERROR:RL::INVALID_POS\n";
 	}
 	SetFlag(FLAG_Z, r == 0);
 	SetFlag(FLAG_N, false);
@@ -526,7 +526,7 @@ void Z80::RRC(uint16_t &reg, std::string pos)
 	}
 	else
 	{
-		std::cout << "ERROR:LD8::INVALID_POS\n";
+		std::cout << "ERROR:RRC::INVALID_POS\n";
 	}
 	SetFlag(FLAG_Z, r == 0);
 	SetFlag(FLAG_N, false);
@@ -569,7 +569,7 @@ void Z80::RR(uint16_t &reg, std::string pos)
 	}
 	else
 	{
-		std::cout << "ERROR:LD8::INVALID_POS\n";
+		std::cout << "ERROR:RR::INVALID_POS\n";
 	}
 	SetFlag(FLAG_Z, r == 0);
 	SetFlag(FLAG_N, false);
@@ -591,6 +591,7 @@ void Z80::RR()
 	SetFlag(FLAG_C, c);
 }
 
+// Shift reg(pos can be "hi" or "lo") left.
 void Z80::SLA(uint16_t &reg, std::string pos)
 {
 	uint8_t r = 0;
@@ -609,7 +610,7 @@ void Z80::SLA(uint16_t &reg, std::string pos)
 	}
 	else
 	{
-		std::cout << "ERROR:LD8::INVALID_POS\n";
+		std::cout << "ERROR:SLA::INVALID_POS\n";
 	}
 	SetFlag(FLAG_Z, r == 0);
 	SetFlag(FLAG_N, false);
@@ -617,11 +618,58 @@ void Z80::SLA(uint16_t &reg, std::string pos)
 	SetFlag(FLAG_C, c);
 }
 
+// Shift the data in moemory at (HL) left.
 void Z80::SLA()
 {
 	uint8_t data = memory[registers[HL]];
 	uint8_t c = (data & 0x80) >> 7;
 	data <<= 1;
+	memory[registers[HL]] = data;
+	SetFlag(FLAG_Z, data == 0);
+	SetFlag(FLAG_N, false);
+	SetFlag(FLAG_H, false);
+	SetFlag(FLAG_C, c);
+}
+
+// Swap reg(pos can be "hi" or "lo") low/hi nibble.
+void Z80::SWAP(uint16_t &reg, std::string pos)
+{
+	uint8_t r = 0;
+	uint8_t hn = 0;
+	uint8_t ln = 0;
+	if(pos == "hi")
+	{
+		r = GetHiRegister(reg);
+		hn = (r & 0xf0) >> 4;
+		ln = (r & 0x0f) << 4;
+		r = ln | hn;
+		SetHiRegister(reg, ln);
+	}
+	else if(pos == "lo")
+	{
+		r = GetLoRegister(reg);
+		hn = (r & 0xf0) >> 4;
+		ln = (r & 0x0f) << 4;
+		r = ln | hn;
+		SetLoRegister(reg, r);
+	}
+	else
+	{
+		std::cout << "ERROR:SWAP::INVALID_POS\n";
+	}
+	SetFlag(FLAG_Z, r == 0);
+	SetFlag(FLAG_N, false);
+	SetFlag(FLAG_H, false);
+	SetFlag(FLAG_C, false);
+}
+
+// Swap the data in memory at (HL)'s low/hi nibble.
+void Z80::SWAP()
+{
+	uint8_t data = memory[registers[HL]];
+	uint8_t hn = (data & 0xf0) >> 4;
+	uint8_t ln = (data & 0x0f) << 4;
+	data = ln | hn;
 	memory[registers[HL]] = data;
 	SetFlag(FLAG_Z, data == 0);
 	SetFlag(FLAG_N, false);
