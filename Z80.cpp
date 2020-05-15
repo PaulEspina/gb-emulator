@@ -131,7 +131,6 @@ uint8_t Z80::Decode(uint8_t opcode)
 	uint8_t count = 0;
 	uint16_t nn;
 	uint8_t n;
-	int8_t d;
 	switch(opcode)
 	{
 	// 0x
@@ -281,6 +280,80 @@ uint8_t Z80::Decode(uint8_t opcode)
 		count = 4;
 		break;
 	// 2x
+	case 0x20:
+		n = Fetch();
+		count = JR("NZ", n);
+		count += 8;
+		break;
+	case 0x21:
+		nn = Fetch();
+		nn <<= 8;
+		nn |= Fetch();
+		LD16(registers[HL], nn);
+		count = 12;
+		break;
+	case 0x22:
+		LD8(registers[HL], GetHiRegister(registers[AF]));
+		INC16(registers[HL]);
+		count = 8;
+		break;
+	case 0x23:
+		INC16(registers[HL]);
+		count = 8;
+		break;
+	case 0x24:
+		INC8(registers[HL], "hi");
+		count = 4;
+		break;
+	case 0x25:
+		DEC8(registers[HL], "hi");
+		count = 4;
+		break;
+	case 0x26:
+		n = Fetch();
+		LD8(registers[HL], "hi", n);
+		count = 8;
+		break;
+	case 0x27:
+		DAA();
+		count = 4;
+		break;
+	case 0x28:
+		n = Fetch();
+		count = JR("Z", n);
+		count += 8;
+		break;
+	case 0x29:
+		ADD16(registers[HL]);
+		count = 8;
+		break;
+	case 0x2a:
+		n = ReadMem(registers[HL]);
+		LD8(registers[AF], "hi", n);
+		INC16(registers[HL]);
+		count = 8;
+		break;
+	case 0x2b:
+		DEC16(registers[HL]);
+		count = 8;
+		break;
+	case 0x2c:
+		INC8(registers[HL], "lo");
+		count = 4;
+		break;
+	case 0x2d:
+		DEC8(registers[HL], "lo");
+		count = 4;
+		break;
+	case 0x2e:
+		n = Fetch();
+		LD8(registers[HL], "lo", n);
+		count = 8;
+		break;
+	case 0x2f:
+		CPL();
+		count = 4;
+		break;
 	}
 	return count;
 }
@@ -1087,7 +1160,7 @@ void Z80::JR(int8_t d)
 }
 
 // Conditional relative jump, f can be NZ, Z, NC, Z.
-uint8_t Z80::JP(std::string f, int8_t d)
+uint8_t Z80::JR(std::string f, int8_t d)
 {
 	if(f == "NZ")
 	{
