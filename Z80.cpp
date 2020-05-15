@@ -878,13 +878,14 @@ void Z80::JP()
 }
 
 // Conditional jump, f can be NZ, Z, NC, C.|
-void Z80::JP(std::string f, uint16_t addr)
+uint8_t Z80::JP(std::string f, uint16_t addr)
 {
 	if(f == "NZ")
 	{
 		if(!GetFlag(FLAG_Z))
 		{
 			pc = addr;
+			return 4;
 		}
 	}
 	else if(f == " Z")
@@ -892,6 +893,7 @@ void Z80::JP(std::string f, uint16_t addr)
 		if(GetFlag(FLAG_Z))
 		{
 			pc = addr;
+			return 4;
 		}
 	}
 	else if(f == "NC")
@@ -899,6 +901,7 @@ void Z80::JP(std::string f, uint16_t addr)
 		if(!GetFlag(FLAG_C))
 		{
 			pc = addr;
+			return 4;
 		}
 	}
 	else if(f == "C")
@@ -906,12 +909,14 @@ void Z80::JP(std::string f, uint16_t addr)
 		if(GetFlag(FLAG_C))
 		{
 			pc = addr;
+			return 4;
 		}
 	}
 	else
 	{
 		std::cout << "ERROR:JP::INVALID_POS\n";
 	}
+	return 0;
 }
 
 // Relative jump to nn.
@@ -921,13 +926,14 @@ void Z80::JR(int8_t d)
 }
 
 // Conditional relative jump, f can be NZ, Z, NC, Z.
-void Z80::JP(std::string f, int8_t d)
+uint8_t Z80::JP(std::string f, int8_t d)
 {
 	if(f == "NZ")
 	{
 		if(!GetFlag(FLAG_Z))
 		{
 			pc += d;
+			return 4;
 		}
 	}
 	else if(f == " Z")
@@ -935,6 +941,7 @@ void Z80::JP(std::string f, int8_t d)
 		if(GetFlag(FLAG_Z))
 		{
 			pc += d;
+			return 4;
 		}
 	}
 	else if(f == "NC")
@@ -942,6 +949,7 @@ void Z80::JP(std::string f, int8_t d)
 		if(!GetFlag(FLAG_C))
 		{
 			pc += d;
+			return 4;
 		}
 	}
 	else if(f == "C")
@@ -949,10 +957,12 @@ void Z80::JP(std::string f, int8_t d)
 		if(GetFlag(FLAG_C))
 		{
 			pc += d;
+			return 4;
 		}
 	}
 	else
 	{
 		std::cout << "ERROR:JR::INVALID_POS\n";
 	}
+	return 0;
 }

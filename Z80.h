@@ -133,11 +133,12 @@ private:
 	// Jump to HL.
 	void JP();
 	// Conditional jump, f can be NZ, Z, NC, C.
-	void JP(std::string f, uint16_t addr);
+	uint8_t JP(std::string f, uint16_t addr);
 	// Relative jump to nn.
 	void JR(int8_t d);
 	// Conditional relative jump, f can be NZ, Z, NC, Z.
-	void JP(std::string f, int8_t d);
+	uint8_t JP(std::string f, int8_t d);
+	// Call to nn.
 	/*
 		Registers
 		0 - AF
