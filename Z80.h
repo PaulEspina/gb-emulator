@@ -135,7 +135,7 @@ private:
 	void JP();
 	// Conditional jump, f can be NZ, Z, NC, C.
 	uint8_t JP(std::string f, uint16_t addr);
-	// Relative jump to nn.
+	// Relative jump.
 	void JR(int8_t d);
 	// Conditional relative jump, f can be NZ, Z, NC, C.
 	uint8_t JP(std::string f, int8_t d);
