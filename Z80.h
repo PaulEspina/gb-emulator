@@ -146,6 +146,18 @@ private:
 	void RET();
 	// Conditional return, f can be NZ, Z, NC, C.
 	uint8_t RET(std::string f);
+	// Toggles carry flag.
+	void CCF();
+	// Sets carry flag.
+	void SCF();
+	// Halts until interrupt occurs.
+	void HALT();
+	// Standby mode.
+	void STOP();
+	// disable interrupts, IME = false;
+	void DI();
+	// enables interrupts, IME = true;
+	void EI();
 	/*
 		Registers
 		0 - AF

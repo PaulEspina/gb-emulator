@@ -1065,3 +1065,53 @@ uint8_t Z80::RET(std::string f)
 	}
 	return 0;
 }
+
+// Toggles carry flag.
+void Z80::CCF()
+{
+	SetFlag(FLAG_C, GetFlag(FLAG_C) ^ 1);
+}
+
+// Sets carry flag.
+void Z80::SCF()
+{
+	SetFlag(FLAG_C, 1);
+}
+
+// Halts until interrupt occurs.
+void Z80::HALT()
+{
+	if(IME)
+	{
+		bool halt = false;
+		uint8_t IE = ReadMem(0xff0f);
+		for(int i = 0; i < 4; i++)
+		{
+			uint8_t setter = 1 << i;
+			halt = (IE & setter) == 1 ? true : false;
+		}
+		if(halt)
+		{
+			pc--;
+		}
+	}
+}
+
+// Standby mode.
+void Z80::STOP()
+{
+	// TODO
+}
+
+// disable interrupts, IME = false;
+void Z80::DI()
+{
+	IME = false;
+}
+
+// enables interrupts, IME = true;
+void Z80::EI()
+{
+	IME = true;
+}
+
