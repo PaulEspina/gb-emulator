@@ -131,13 +131,15 @@ uint8_t Z80::Fetch()
 // Push data to stack.
 void Z80::PUSH(uint16_t data)
 {
-	WriteMem(sp--, data);
+	sp -= 2;
+	WriteMem(sp, data);
 }
 
 // Pop data from stack to reg.
 void Z80::POP(uint16_t &reg)
 {
-	reg = ReadMem(--sp);
+	reg = ReadMem(sp);
+	sp += 2;
 }
 
 // Move data to reg(pos can be "hi" or "lo").
@@ -884,7 +886,7 @@ uint8_t Z80::JP(std::string f, uint16_t addr)
 	{
 		if(!GetFlag(FLAG_Z))
 		{
-			pc = addr;
+			JP(addr);
 			return 4;
 		}
 	}
@@ -892,7 +894,7 @@ uint8_t Z80::JP(std::string f, uint16_t addr)
 	{
 		if(GetFlag(FLAG_Z))
 		{
-			pc = addr;
+			JP(addr);
 			return 4;
 		}
 	}
@@ -900,7 +902,7 @@ uint8_t Z80::JP(std::string f, uint16_t addr)
 	{
 		if(!GetFlag(FLAG_C))
 		{
-			pc = addr;
+			JP(addr);
 			return 4;
 		}
 	}
@@ -908,7 +910,7 @@ uint8_t Z80::JP(std::string f, uint16_t addr)
 	{
 		if(GetFlag(FLAG_C))
 		{
-			pc = addr;
+			JP(addr);
 			return 4;
 		}
 	}
@@ -932,7 +934,7 @@ uint8_t Z80::JP(std::string f, int8_t d)
 	{
 		if(!GetFlag(FLAG_Z))
 		{
-			pc += d;
+			JR(d);
 			return 4;
 		}
 	}
@@ -940,7 +942,7 @@ uint8_t Z80::JP(std::string f, int8_t d)
 	{
 		if(GetFlag(FLAG_Z))
 		{
-			pc += d;
+			JR(d);
 			return 4;
 		}
 	}
@@ -948,7 +950,7 @@ uint8_t Z80::JP(std::string f, int8_t d)
 	{
 		if(!GetFlag(FLAG_C))
 		{
-			pc += d;
+			JR(d);
 			return 4;
 		}
 	}
@@ -956,13 +958,110 @@ uint8_t Z80::JP(std::string f, int8_t d)
 	{
 		if(GetFlag(FLAG_C))
 		{
-			pc += d;
+			JR(d);
 			return 4;
 		}
 	}
 	else
 	{
 		std::cout << "ERROR:JR::INVALID_POS\n";
+	}
+	return 0;
+}
+
+// Call to nn.
+void Z80::CALL(uint16_t nn)
+{
+	PUSH(pc);
+	pc = nn;
+}
+
+// Conditional call, f can be NZ, Z, NC, C.
+uint8_t Z80::CALL(std::string f, uint16_t nn)
+{
+	if(f == "NZ")
+	{
+		if(!GetFlag(FLAG_Z))
+		{
+			CALL(nn);
+			return 12;
+		}
+	}
+	else if(f == " Z")
+	{
+		if(GetFlag(FLAG_Z))
+		{
+			CALL(nn);
+			return 12;
+		}
+	}
+	else if(f == "NC")
+	{
+		if(!GetFlag(FLAG_C))
+		{
+			CALL(nn);
+			return 12;
+		}
+	}
+	else if(f == "C")
+	{
+		if(GetFlag(FLAG_C))
+		{
+			CALL(nn);
+			return 12;
+		}
+	}
+	else
+	{
+		std::cout << "ERROR:CALL::INVALID_POS\n";
+	}
+	return 0;
+}
+
+// Return from a subroutine.
+void Z80::RET()
+{
+	POP(pc);
+}
+
+// Conditional return, f can be NZ, Z, NC, C.
+uint8_t Z80::RET(std::string f)
+{
+	if(f == "NZ")
+	{
+		if(!GetFlag(FLAG_Z))
+		{
+			RET();
+			return 12;
+		}
+	}
+	else if(f == " Z")
+	{
+		if(GetFlag(FLAG_Z))
+		{
+			RET();
+			return 12;
+		}
+	}
+	else if(f == "NC")
+	{
+		if(!GetFlag(FLAG_C))
+		{
+			RET();
+			return 12;
+		}
+	}
+	else if(f == "C")
+	{
+		if(GetFlag(FLAG_C))
+		{
+			RET();
+			return 12;
+		}
+	}
+	else
+	{
+		std::cout << "ERROR:RET::INVALID_POS\n";
 	}
 	return 0;
 }

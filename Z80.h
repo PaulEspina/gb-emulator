@@ -136,9 +136,16 @@ private:
 	uint8_t JP(std::string f, uint16_t addr);
 	// Relative jump to nn.
 	void JR(int8_t d);
-	// Conditional relative jump, f can be NZ, Z, NC, Z.
+	// Conditional relative jump, f can be NZ, Z, NC, C.
 	uint8_t JP(std::string f, int8_t d);
 	// Call to nn.
+	void CALL(uint16_t nn);
+	// Conditional call, f can be NZ, Z, NC, C.
+	uint8_t CALL(std::string f, uint16_t nn);
+	// Return from a subroutine.
+	void RET();
+	// Conditional return, f can be NZ, Z, NC, C.
+	uint8_t RET(std::string f);
 	/*
 		Registers
 		0 - AF
