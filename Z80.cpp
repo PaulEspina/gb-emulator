@@ -1066,6 +1066,20 @@ uint8_t Z80::RET(std::string f)
 	return 0;
 }
 
+// Return from a subroutine and enable interrupts.
+void Z80::RETI()
+{
+	POP(pc);
+	IME = true;
+}
+
+// Push present address onto stack. Jump to address $0000 + n.
+void Z80::RST(uint8_t n)
+{
+	PUSH(pc);
+	JP(0x0000 + n);
+}
+
 // Toggles carry flag.
 void Z80::CCF()
 {

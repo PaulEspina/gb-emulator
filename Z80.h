@@ -146,6 +146,10 @@ private:
 	void RET();
 	// Conditional return, f can be NZ, Z, NC, C.
 	uint8_t RET(std::string f);
+	// Return from a subroutine and enable interrupts.
+	void RETI();
+	// Push present address onto stack. Jump to address $0000 + n.
+	void RST(uint8_t n);
 	// Toggles carry flag.
 	void CCF();
 	// Sets carry flag.
