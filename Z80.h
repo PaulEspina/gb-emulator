@@ -32,6 +32,7 @@ private:
 	bool GetFlag(int bit);
 	void Cycle();
 	uint8_t Fetch();
+	uint8_t Decode(uint8_t opcode);
 	/* OPCODES */
 	// Push data to stack.
 	void PUSH(uint16_t data);

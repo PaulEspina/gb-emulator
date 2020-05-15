@@ -114,7 +114,7 @@ void Z80::Cycle()
 	if(cycle_count > 0)
 	{
 		uint8_t opcode = Fetch();
-
+		cycle_count = Decode(opcode);
 	}
 	cycle_count--;
 }
@@ -124,6 +124,91 @@ uint8_t Z80::Fetch()
 	uint8_t opcode = memory[pc];
 	pc++;
 	return opcode;
+}
+
+uint8_t Z80::Decode(uint8_t opcode)
+{
+	uint8_t count = 0;
+	uint16_t nn;
+	uint8_t n;
+	int8_t d;
+	switch(opcode)
+	{
+	case 0x00:
+		count = 4;
+		break;
+	case 0x01:
+		nn = Fetch();
+		nn <<= 8;
+		nn |= Fetch();
+		LD16(registers[BC], nn);
+		count = 12;
+		break;
+	case 0x02:
+		LD8(registers[BC], GetHiRegister(registers[AF]));
+		count = 8;
+		break;
+	case 0x03:
+		INC16(registers[BC]);
+		count = 8;
+		break;
+	case 0x04:
+		INC8(registers[BC], "hi");
+		count = 4;
+		break;
+	case 0x05:
+		DEC8(registers[BC], "hi");
+		count = 4;
+		break;
+	case 0x06:
+		n = Fetch();
+		LD8(registers[BC], "hi", n);
+		count = 8;
+		break;
+	case 0x07:
+		RLCA();
+		count = 4;
+		break;
+	case 0x08:
+		nn = Fetch();
+		nn <<= 8;
+		nn |= Fetch();
+		LD8(nn++, GetHiRegister(sp));
+		LD8(nn, GetLoRegister(sp));
+		count = 20;
+		break;
+	case 0x09:
+		ADD16(registers[BC]);
+		count = 8;
+		break;
+	case 0x0a:
+		n = ReadMem(registers[BC]);
+		LD8(registers[AF], "hi", n);
+		count = 8;
+		break;
+	case 0x0b:
+		DEC16(registers[BC]);
+		count = 8;
+		break;
+	case 0x0c:
+		INC8(registers[BC], "lo");
+		count = 4;
+		break;
+	case 0x0d:
+		DEC8(registers[BC], "lo");
+		count = 4;
+		break;
+	case 0x0e:
+		n = Fetch();
+		LD8(registers[BC], "lo", n);
+		count = 8;
+		break;
+	case 0x0f:
+		RRCA();
+		count = 4;
+		break;
+	}
+	return count;
 }
 
 /////////////////////////////////////////////////////////////
