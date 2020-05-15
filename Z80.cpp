@@ -4,6 +4,7 @@
 
 Z80::Z80()
 {
+	IME = false;
 	memset(&registers, 0, sizeof(registers));
 	sp = 0;
 	pc = 0;
@@ -862,4 +863,96 @@ void Z80::RES(int n)
 	setter ^= 0xff;
 	data &= setter;
 	WriteMem(registers[HL], data);
+}
+
+// Jump to nn.
+void Z80::JP(uint16_t nn)
+{
+	pc = nn;
+}
+
+// Jump to HL.
+void Z80::JP()
+{
+	pc = registers[HL];
+}
+
+// Conditional jump, f can be NZ, Z, NC, C.|
+void Z80::JP(std::string f, uint16_t addr)
+{
+	if(f == "NZ")
+	{
+		if(!GetFlag(FLAG_Z))
+		{
+			pc = addr;
+		}
+	}
+	else if(f == " Z")
+	{
+		if(GetFlag(FLAG_Z))
+		{
+			pc = addr;
+		}
+	}
+	else if(f == "NC")
+	{
+		if(!GetFlag(FLAG_C))
+		{
+			pc = addr;
+		}
+	}
+	else if(f == "C")
+	{
+		if(GetFlag(FLAG_C))
+		{
+			pc = addr;
+		}
+	}
+	else
+	{
+		std::cout << "ERROR:JP::INVALID_POS\n";
+	}
+}
+
+// Relative jump to nn.
+void Z80::JR(int8_t d)
+{
+	pc += d;
+}
+
+// Conditional relative jump, f can be NZ, Z, NC, Z.
+void Z80::JP(std::string f, int8_t d)
+{
+	if(f == "NZ")
+	{
+		if(!GetFlag(FLAG_Z))
+		{
+			pc += d;
+		}
+	}
+	else if(f == " Z")
+	{
+		if(GetFlag(FLAG_Z))
+		{
+			pc += d;
+		}
+	}
+	else if(f == "NC")
+	{
+		if(!GetFlag(FLAG_C))
+		{
+			pc += d;
+		}
+	}
+	else if(f == "C")
+	{
+		if(GetFlag(FLAG_C))
+		{
+			pc += d;
+		}
+	}
+	else
+	{
+		std::cout << "ERROR:JR::INVALID_POS\n";
+	}
 }

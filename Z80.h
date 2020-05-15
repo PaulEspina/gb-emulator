@@ -128,6 +128,16 @@ private:
 	void RES(uint16_t &reg, std::string pos, int n);
 	// Reset bit n of the data in memory at (HL).
 	void RES(int n);
+	// Jump to nn.
+	void JP(uint16_t nn);
+	// Jump to HL.
+	void JP();
+	// Conditional jump, f can be NZ, Z, NC, C.
+	void JP(std::string f, uint16_t addr);
+	// Relative jump to nn.
+	void JR(int8_t d);
+	// Conditional relative jump, f can be NZ, Z, NC, Z.
+	void JP(std::string f, int8_t d);
 	/*
 		Registers
 		0 - AF
@@ -148,4 +158,5 @@ private:
 	uint8_t memory[0x10000];
 	uint8_t screen[144][160];
 	uint8_t cycle_count;
+	bool IME;
 };
