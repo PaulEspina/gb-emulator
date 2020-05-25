@@ -354,6 +354,81 @@ uint8_t Z80::Decode(uint8_t opcode)
 		CPL();
 		count = 4;
 		break;
+	// 3x
+	case 0x30:
+		n = Fetch();
+		count = JR("NC", n);
+		count += 8;
+		break;
+	case 0x31:
+		nn = Fetch();
+		nn <<= 8;
+		nn |= Fetch();
+		LD16(sp, nn);
+		count = 12;
+		break;
+	case 0x32:
+		LD8(registers[HL], GetHiRegister(registers[AF]));
+		DEC16(registers[HL]);
+		count = 8;
+		break;
+	case 0x33:
+		INC16(sp);
+		count = 8;
+		break;
+	case 0x34:
+		INC8(registers[HL]);
+		count = 12;
+		break;
+	case 0x35:
+		DEC8(registers[HL]);
+		count = 12;
+		break;
+	case 0x36:
+		n = Fetch();
+		LD8(registers[HL], n);
+		count = 12;
+		break;
+	case 0x37:
+		SCF();
+		count = 4;
+		break;
+	case 0x38:
+		n = Fetch();
+		count = JR("C", n);
+		count += 8;
+		break;
+	case 0x39:
+		ADD16(sp);
+		count = 8;
+		break;
+	case 0x3a:
+		n = ReadMem(registers[HL]);
+		LD8(registers[AF], "hi", n);
+		DEC16(registers[HL]);
+		count = 8;
+		break;
+	case 0x3b:
+		DEC16(sp);
+		count = 8;
+		break;
+	case 0x3c:
+		INC8(registers[AF], "hi");
+		count = 4;
+		break;
+	case 0x3d:
+		DEC8(registers[AF], "hi");
+		count = 4;
+		break;
+	case 0x3e:
+		n = Fetch();
+		LD8(registers[AF], "hi", n);
+		count = 8;
+		break;
+	case 0x3f:
+		CCF();
+		count = 4;
+		break;
 	}
 	return count;
 }
@@ -1159,7 +1234,7 @@ void Z80::JR(int8_t d)
 	pc += d;
 }
 
-// Conditional relative jump, f can be NZ, Z, NC, Z.
+// Conditional relative jump, f can be NZ, Z, NC, C.
 uint8_t Z80::JR(std::string f, int8_t d)
 {
 	if(f == "NZ")
