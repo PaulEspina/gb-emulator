@@ -429,6 +429,73 @@ uint8_t Z80::Decode(uint8_t opcode)
 		CCF();
 		count = 4;
 		break;
+	// 4x
+	case 0x40:
+		LD8(registers[BC], "hi", GetHiRegister(registers[BC]));
+		count = 4;
+		break;
+	case 0x41:
+		LD8(registers[BC], "hi", GetLoRegister(registers[BC]));
+		count = 4;
+		break;
+	case 0x42:
+		LD8(registers[BC], "hi", GetHiRegister(registers[DE]));
+		count = 4;
+		break;
+	case 0x43:
+		LD8(registers[BC], "hi", GetLoRegister(registers[DE]));
+		count = 4;
+		break;
+	case 0x44:
+		LD8(registers[BC], "hi", GetHiRegister(registers[HL]));
+		count = 4;
+		break;
+	case 0x45:
+		LD8(registers[BC], "hi", GetLoRegister(registers[HL]));
+		count = 4;
+		break;
+	case 0x46:
+		n = ReadMem(registers[HL]);
+		LD8(registers[BC], "hi", n);
+		count = 8;
+		break;
+	case 0x47:
+		LD8(registers[BC], "hi", GetHiRegister(registers[AF]));
+		count = 4;
+		break;
+	case 0x48:
+		LD8(registers[BC], "lo", GetHiRegister(registers[BC]));
+		count = 4;
+		break;
+	case 0x49:
+		LD8(registers[BC], "lo", GetLoRegister(registers[BC]));
+		count = 4;
+		break;
+	case 0x4a:
+		LD8(registers[BC], "lo", GetHiRegister(registers[DE]));
+		count = 4;
+		break;
+	case 0x4b:
+		LD8(registers[BC], "lo", GetLoRegister(registers[DE]));
+		count = 4;
+		break;
+	case 0x4c:
+		LD8(registers[BC], "lo", GetHiRegister(registers[HL]));
+		count = 4;
+		break;
+	case 0x4d:
+		LD8(registers[BC], "lo", GetLoRegister(registers[HL]));
+		count = 4;
+		break;
+	case 0x4e:
+		n = ReadMem(registers[HL]);
+		LD8(registers[BC], "lo", n);
+		count = 8;
+		break;
+	case 0x4f:
+		LD8(registers[BC], "lo", GetHiRegister(registers[AF]));
+		count = 4;
+		break;
 	}
 	return count;
 }
