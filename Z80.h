@@ -37,6 +37,7 @@ constexpr int FLAG_N = 2;
 constexpr int FLAG_H = 1;
 constexpr int FLAG_C = 0;
 
+
 class Z80
 {
 public:
@@ -44,6 +45,28 @@ public:
 	bool LoadCartridge(std::string path);
 	void Init();
 private:
+	/*
+		Registers
+		0 - AF
+		1 - BC
+		2 - DE
+		3 - HL
+
+		Only the first 4 most significant bit of F is used
+		Bit 7(3): Zero flag(Z)
+		Bit 6(2): Subtract flag(N)
+		Bit 5(1): Half carry flag(H)
+		Bit 4(0): Carry flag(C)
+	*/
+	uint16_t registers[4];
+	uint16_t sp;
+	uint16_t pc;
+	uint8_t cartridge[0x200000];
+	uint8_t memory[0x10000];
+	uint8_t screen[144][160];
+	uint8_t cycle_count;
+	bool IME;
+	enum class rel_jp_flag{NZ = 0, Z = 1, NC = 2, C = 3 };
 	uint8_t ReadMem(uint16_t addr);
 	void WriteMem(uint16_t addr, uint8_t data);
 	uint8_t GetHiRegister(uint16_t reg);
@@ -156,19 +179,19 @@ private:
 	// Jump to HL.
 	void JP();
 	// Conditional jump, f can be NZ, Z, NC, C.
-	uint8_t JP(std::string f, uint16_t addr);
+	uint8_t JP(rel_jp_flag f, uint16_t addr);
 	// Relative jump.
 	void JR(int8_t d);
 	// Conditional relative jump, f can be NZ, Z, NC, C.
-	uint8_t JR(std::string f, int8_t d);
+	uint8_t JR(rel_jp_flag f, int8_t d);
 	// Call to nn.
 	void CALL(uint16_t nn);
 	// Conditional call, f can be NZ, Z, NC, C.
-	uint8_t CALL(std::string f, uint16_t nn);
+	uint8_t CALL(rel_jp_flag, uint16_t nn);
 	// Return from a subroutine.
 	void RET();
 	// Conditional return, f can be NZ, Z, NC, C.
-	uint8_t RET(std::string f);
+	uint8_t RET(rel_jp_flag f);
 	// Return from a subroutine and enable interrupts.
 	void RETI();
 	// Push present address onto stack. Jump to address $0000 + n.
@@ -185,25 +208,4 @@ private:
 	void DI();
 	// enables interrupts, IME = true;
 	void EI();
-	/*
-		Registers
-		0 - AF
-		1 - BC
-		2 - DE
-		3 - HL
-
-		Only the first 4 most significant bit of F is used
-		Bit 7(3): Zero flag(Z)
-		Bit 6(2): Subtract flag(N)
-		Bit 5(1): Half carry flag(H)
-		Bit 4(0): Carry flag(C)
-	*/
-	uint16_t registers[4];
-	uint16_t sp;
-	uint16_t pc;
-	uint8_t cartridge[0x200000];
-	uint8_t memory[0x10000];
-	uint8_t screen[144][160];
-	uint8_t cycle_count;
-	bool IME;
 };

@@ -1276,45 +1276,43 @@ void Z80::JP()
 }
 
 // Conditional jump, f can be NZ, Z, NC, C.|
-uint8_t Z80::JP(std::string f, uint16_t addr)
+uint8_t Z80::JP(rel_jp_flag f, uint16_t addr)
 {
-	if(f == "NZ")
+	switch(f)
 	{
+	case rel_jp_flag::NZ:
 		if(!GetFlag(FLAG_Z))
 		{
 			JP(addr);
 			return 4;
 		}
-	}
-	else if(f == " Z")
-	{
+		break;
+	case rel_jp_flag::Z:
 		if(GetFlag(FLAG_Z))
 		{
 			JP(addr);
 			return 4;
 		}
-	}
-	else if(f == "NC")
-	{
+		break;
+	case rel_jp_flag::NC:
 		if(!GetFlag(FLAG_C))
 		{
 			JP(addr);
 			return 4;
 		}
-	}
-	else if(f == "C")
-	{
+		break;
+	case rel_jp_flag::C:
 		if(GetFlag(FLAG_C))
 		{
 			JP(addr);
 			return 4;
 		}
-	}
-	else
-	{
+		break;
+	default:
 		std::cout << "ERROR:JP::INVALID_POS\n";
+		return 0;
+		break;
 	}
-	return 0;
 }
 
 // Relative jump.
@@ -1324,45 +1322,42 @@ void Z80::JR(int8_t d)
 }
 
 // Conditional relative jump, f can be NZ, Z, NC, C.
-uint8_t Z80::JR(std::string f, int8_t d)
+uint8_t Z80::JR(rel_jp_flag f, int8_t d)
 {
-	if(f == "NZ")
+	switch(f)
 	{
+	case rel_jp_flag::NZ:
 		if(!GetFlag(FLAG_Z))
 		{
 			JR(d);
 			return 4;
 		}
-	}
-	else if(f == " Z")
-	{
+		break;
+	case rel_jp_flag::Z:
 		if(GetFlag(FLAG_Z))
 		{
 			JR(d);
 			return 4;
 		}
-	}
-	else if(f == "NC")
-	{
+		break;
+	case rel_jp_flag::NC:
 		if(!GetFlag(FLAG_C))
 		{
 			JR(d);
 			return 4;
 		}
-	}
-	else if(f == "C")
-	{
+		break;
+	case rel_jp_flag::C:
 		if(GetFlag(FLAG_C))
 		{
 			JR(d);
 			return 4;
 		}
-	}
-	else
-	{
+		break;
+	default:
 		std::cout << "ERROR:JR::INVALID_POS\n";
+		return 0;
 	}
-	return 0;
 }
 
 // Call to nn.
@@ -1373,45 +1368,42 @@ void Z80::CALL(uint16_t nn)
 }
 
 // Conditional call, f can be NZ, Z, NC, C.
-uint8_t Z80::CALL(std::string f, uint16_t nn)
+uint8_t Z80::CALL(rel_jp_flag f, uint16_t nn)
 {
-	if(f == "NZ")
+	switch(f)
 	{
+	case rel_jp_flag::NZ:
 		if(!GetFlag(FLAG_Z))
 		{
 			CALL(nn);
 			return 12;
 		}
-	}
-	else if(f == " Z")
-	{
+		break;
+	case rel_jp_flag::Z:
 		if(GetFlag(FLAG_Z))
 		{
 			CALL(nn);
 			return 12;
 		}
-	}
-	else if(f == "NC")
-	{
+		break;
+	case rel_jp_flag::NC:
 		if(!GetFlag(FLAG_C))
 		{
 			CALL(nn);
 			return 12;
 		}
-	}
-	else if(f == "C")
-	{
+		break;
+	case rel_jp_flag::C:
 		if(GetFlag(FLAG_C))
 		{
 			CALL(nn);
 			return 12;
 		}
-	}
-	else
-	{
+		break;
+	default:
 		std::cout << "ERROR:CALL::INVALID_POS\n";
+		return 0;
 	}
-	return 0;
 }
 
 // Return from a subroutine.
@@ -1421,45 +1413,42 @@ void Z80::RET()
 }
 
 // Conditional return, f can be NZ, Z, NC, C.
-uint8_t Z80::RET(std::string f)
+uint8_t Z80::RET(rel_jp_flag f)
 {
-	if(f == "NZ")
+	switch(f)
 	{
+	case rel_jp_flag::NZ:
 		if(!GetFlag(FLAG_Z))
 		{
 			RET();
 			return 12;
 		}
-	}
-	else if(f == " Z")
-	{
+		break;
+	case rel_jp_flag::Z:
 		if(GetFlag(FLAG_Z))
 		{
 			RET();
 			return 12;
 		}
-	}
-	else if(f == "NC")
-	{
+		break;
+	case rel_jp_flag::NC:
 		if(!GetFlag(FLAG_C))
 		{
 			RET();
 			return 12;
 		}
-	}
-	else if(f == "C")
-	{
+		break;
+	case rel_jp_flag::C:
 		if(GetFlag(FLAG_C))
 		{
 			RET();
 			return 12;
 		}
-	}
-	else
-	{
+		break;
+	default:
 		std::cout << "ERROR:RET::INVALID_POS\n";
+		return 0;
 	}
-	return 0;
 }
 
 // Return from a subroutine and enable interrupts.
