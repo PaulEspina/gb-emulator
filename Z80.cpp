@@ -304,7 +304,7 @@ uint8_t Z80::Decode(uint8_t opcode)
 	// 2x
 	case 0x20:
 		n = Fetch();
-		count = JR("NZ", n);
+		count = JR(rel_jp_flag::NZ, n);
 		count += 8;
 		break;
 	case 0x21:
@@ -342,7 +342,7 @@ uint8_t Z80::Decode(uint8_t opcode)
 		break;
 	case 0x28:
 		n = Fetch();
-		count = JR("Z", n);
+		count = JR(rel_jp_flag::Z, n);
 		count += 8;
 		break;
 	case 0x29:
@@ -379,7 +379,7 @@ uint8_t Z80::Decode(uint8_t opcode)
 	// 3x
 	case 0x30:
 		n = Fetch();
-		count = JR("NC", n);
+		count = JR(rel_jp_flag::NC, n);
 		count += 8;
 		break;
 	case 0x31:
@@ -417,7 +417,7 @@ uint8_t Z80::Decode(uint8_t opcode)
 		break;
 	case 0x38:
 		n = Fetch();
-		count = JR("C", n);
+		count = JR(rel_jp_flag::C, n);
 		count += 8;
 		break;
 	case 0x39:
