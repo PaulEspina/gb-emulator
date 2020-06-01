@@ -1452,6 +1452,71 @@ uint8_t Z80::PrefixCB(uint8_t opcode)
 		SRA(registers[AF], "hi");
 		count = 8;
 		break;
+	// 3x
+	case 0x30:
+		SWAP(registers[BC], "hi");
+		count = 8;
+		break;
+	case 0x31:
+		SWAP(registers[BC], "lo");
+		count = 8;
+		break;
+	case 0x32:
+		SWAP(registers[DE], "hi");
+		count = 8;
+		break;
+	case 0x33:
+		SWAP(registers[DE], "lo");
+		count = 8;
+		break;
+	case 0x34:
+		SWAP(registers[HL], "hi");
+		count = 8;
+		break;
+	case 0x35:
+		SWAP(registers[HL], "lo");
+		count = 8;
+		break;
+	case 0x36:
+		SWAP();
+		count = 16;
+		break;
+	case 0x37:
+		SWAP(registers[AF], "hi");
+		count = 8;
+		break;
+	case 0x38:
+		SRL(registers[BC], "hi");
+		count = 8;
+		break;
+	case 0x39:
+		SRL(registers[BC], "lo");
+		count = 8;
+		break;
+	case 0x3a:
+		SRL(registers[DE], "hi");
+		count = 8;
+		break;
+	case 0x3b:
+		SRL(registers[DE], "lo");
+		count = 8;
+		break;
+	case 0x3c:
+		SRL(registers[HL], "hi");
+		count = 8;
+		break;
+	case 0x3d:
+		SRL(registers[HL], "lo");
+		count = 8;
+		break;
+	case 0x3e:
+		SRL();
+		count = 16;
+		break;
+	case 0x3f:
+		SRL(registers[AF], "hi");
+		count = 8;
+		break;
 	}
 	return count;
 }
