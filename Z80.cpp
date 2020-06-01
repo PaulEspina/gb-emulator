@@ -1582,6 +1582,201 @@ uint8_t Z80::PrefixCB(uint8_t opcode)
 		BIT(registers[AF], "hi", 1);
 		count = 8;
 		break;
+	// 5x
+	case 0x50:
+		BIT(registers[BC], "hi", 2);
+		count = 8;
+		break;
+	case 0x51:
+		BIT(registers[BC], "lo", 2);
+		count = 8;
+		break;
+	case 0x52:
+		BIT(registers[DE], "hi", 2);
+		count = 8;
+		break;
+	case 0x53:
+		BIT(registers[DE], "lo", 2);
+		count = 8;
+		break;
+	case 0x54:
+		BIT(registers[HL], "hi", 2);
+		count = 8;
+		break;
+	case 0x55:
+		BIT(registers[HL], "lo", 2);
+		count = 8;
+		break;
+	case 0x56:
+		BIT(2);
+		count = 16;
+		break;
+	case 0x57:
+		BIT(registers[AF], "hi", 2);
+		count = 8;
+		break;
+	case 0x58:
+		BIT(registers[BC], "hi", 3);
+		count = 8;
+		break;
+	case 0x59:
+		BIT(registers[BC], "lo", 3);
+		count = 8;
+		break;
+	case 0x5a:
+		BIT(registers[DE], "hi", 3);
+		count = 8;
+		break;
+	case 0x5b:
+		BIT(registers[DE], "lo", 3);
+		count = 8;
+		break;
+	case 0x5c:
+		BIT(registers[HL], "hi", 3);
+		count = 8;
+		break;
+	case 0x5d:
+		BIT(registers[HL], "lo", 3);
+		count = 8;
+		break;
+	case 0x5e:
+		BIT(3);
+		count = 16;
+		break;
+	case 0x5f:
+		BIT(registers[AF], "hi", 3);
+		count = 8;
+		break;
+	// 6x
+	case 0x60:
+		BIT(registers[BC], "hi", 4);
+		count = 8;
+		break;
+	case 0x61:
+		BIT(registers[BC], "lo", 4);
+		count = 8;
+		break;
+	case 0x62:
+		BIT(registers[DE], "hi", 4);
+		count = 8;
+		break;
+	case 0x63:
+		BIT(registers[DE], "lo", 4);
+		count = 8;
+		break;
+	case 0x64:
+		BIT(registers[HL], "hi", 4);
+		count = 8;
+		break;
+	case 0x65:
+		BIT(registers[HL], "lo", 4);
+		count = 8;
+		break;
+	case 0x66:
+		BIT(4);
+		count = 16;
+		break;
+	case 0x67:
+		BIT(registers[AF], "hi", 4);
+		count = 8;
+		break;
+	case 0x68:
+		BIT(registers[BC], "hi", 5);
+		count = 8;
+		break;
+	case 0x69:
+		BIT(registers[BC], "lo", 5);
+		count = 8;
+		break;
+	case 0x6a:
+		BIT(registers[DE], "hi", 5);
+		count = 8;
+		break;
+	case 0x6b:
+		BIT(registers[DE], "lo", 5);
+		count = 8;
+		break;
+	case 0x6c:
+		BIT(registers[HL], "hi", 5);
+		count = 8;
+		break;
+	case 0x6d:
+		BIT(registers[HL], "lo", 5);
+		count = 8;
+		break;
+	case 0x6e:
+		BIT(5);
+		count = 16;
+		break;
+	case 0x6f:
+		BIT(registers[AF], "hi", 5);
+		count = 8;
+		break;
+	// 7x
+	case 0x70:
+		BIT(registers[BC], "hi", 6);
+		count = 8;
+		break;
+	case 0x71:
+		BIT(registers[BC], "lo", 6);
+		count = 8;
+		break;
+	case 0x72:
+		BIT(registers[DE], "hi", 6);
+		count = 8;
+		break;
+	case 0x73:
+		BIT(registers[DE], "lo", 6);
+		count = 8;
+		break;
+	case 0x74:
+		BIT(registers[HL], "hi", 6);
+		count = 8;
+		break;
+	case 0x75:
+		BIT(registers[HL], "lo", 6);
+		count = 8;
+		break;
+	case 0x76:
+		BIT(6);
+		count = 16;
+		break;
+	case 0x77:
+		BIT(registers[AF], "hi", 6);
+		count = 8;
+		break;
+	case 0x78:
+		BIT(registers[BC], "hi", 7);
+		count = 8;
+		break;
+	case 0x79:
+		BIT(registers[BC], "lo", 7);
+		count = 8;
+		break;
+	case 0x7a:
+		BIT(registers[DE], "hi", 7);
+		count = 8;
+		break;
+	case 0x7b:
+		BIT(registers[DE], "lo", 7);
+		count = 8;
+		break;
+	case 0x7c:
+		BIT(registers[HL], "hi", 7);
+		count = 8;
+		break;
+	case 0x7d:
+		BIT(registers[HL], "lo", 7);
+		count = 8;
+		break;
+	case 0x7e:
+		BIT(7);
+		count = 16;
+		break;
+	case 0x7f:
+		BIT(registers[AF], "hi", 7);
+		count = 8;
+		break;
 	}
 	return count;
 }
