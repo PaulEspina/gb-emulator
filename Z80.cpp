@@ -718,6 +718,73 @@ uint8_t Z80::Decode(uint8_t opcode)
 		LD8(registers[AF], "hi", GetHiRegister(registers[AF]));
 		count = 4;
 		break;
+	// 8x
+	case 0x80:
+		ADD8(GetHiRegister(registers[BC]), false);
+		count = 4;
+		break;
+	case 0x81:
+		ADD8(GetLoRegister(registers[BC]), false);
+		count = 4;
+		break;
+	case 0x82:
+		ADD8(GetHiRegister(registers[DE]), false);
+		count = 4;
+		break;
+	case 0x83:
+		ADD8(GetLoRegister(registers[DE]), false);
+		count = 4;
+		break;
+	case 0x84:
+		ADD8(GetHiRegister(registers[HL]), false);
+		count = 4;
+		break;
+	case 0x85:
+		ADD8(GetLoRegister(registers[HL]), false);
+		count = 4;
+		break;
+	case 0x86:
+		n = ReadMem(registers[HL]);
+		ADD8(n, false);
+		count = 8;
+		break;
+	case 0x87:
+		ADD8(GetHiRegister(registers[AF]), false);
+		count = 4;
+		break;
+	case 0x88:
+		ADD8(GetHiRegister(registers[BC]), true);
+		count = 4;
+		break;
+	case 0x89:
+		ADD8(GetLoRegister(registers[BC]), true);
+		count = 4;
+		break;
+	case 0x8a:
+		ADD8(GetHiRegister(registers[DE]), true);
+		count = 4;
+		break;
+	case 0x8b:
+		ADD8(GetLoRegister(registers[DE]), true);
+		count = 4;
+		break;
+	case 0x8c:
+		ADD8(GetHiRegister(registers[HL]), true);
+		count = 4;
+		break;
+	case 0x8d:
+		ADD8(GetLoRegister(registers[HL]), true);
+		count = 4;
+		break;
+	case 0x8e:
+		n = ReadMem(registers[HL]);
+		ADD8(n, true);
+		count = 8;
+		break;
+	case 0x8f:
+		ADD8(GetHiRegister(registers[AF]), true);
+		count = 4;
+		break;
 	}
 	return count;
 }
