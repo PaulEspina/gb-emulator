@@ -49,7 +49,7 @@ bool Z80::LoadCartridge(std::string path)
 	file.seekg(0, std::ios::beg);
 	std::vector<char> result((unsigned int) length);
 	file.read(&result[0], length);
-	for(unsigned int i = 0, size = result.size(); i < size; i++)
+	for(size_t i = 0, size = result.size(); i < size; i++)
 	{
 		cartridge[i] = (uint8_t) result[i];
 	}
@@ -74,6 +74,7 @@ uint8_t Z80::ReadMem(uint16_t addr)
 	{
 		return memory[addr];
 	}
+	return 0;
 }
 
 void Z80::WriteMem(uint16_t addr, uint8_t data)
@@ -1045,6 +1046,7 @@ uint8_t Z80::Decode(uint8_t opcode)
 		count += 12;
 		break;
 	case 0xcb:
+		n = Fetch();
 		count = PrefixCB(n);
 		break;
 	case 0xcc:
@@ -2306,15 +2308,18 @@ uint8_t Z80::PrefixCB(uint8_t opcode)
 // Push data to stack.
 void Z80::PUSH(uint16_t data)
 {
-	sp -= 2;
-	WriteMem(sp, data);
+	uint8_t d = 0xff00 & data;
+	d >>= 8;
+	WriteMem(sp--, d);
+	d = 0x00ff & data;
+	WriteMem(sp--, d);
 }
 
 // Pop data from stack to reg.
 void Z80::POP(uint16_t &reg)
 {
-	reg = ReadMem(sp);
-	sp += 2;
+	SetHiRegister(reg, ReadMem(sp++));
+	SetLoRegister(reg, ReadMem(sp++));
 }
 
 // Move data to reg(pos can be "hi" or "lo").
@@ -2440,7 +2445,7 @@ void Z80::CP(uint8_t data)
 // Increments reg(pos can be "hi" or "lo").
 void Z80::INC8(uint16_t &reg, std::string pos)
 {
-	uint16_t r = 0;
+	uint8_t r = 0;
 	if(pos == "hi")
 	{
 		r = GetHiRegister(reg);
@@ -2472,7 +2477,7 @@ void Z80::INC16(uint16_t &reg)
 // Decrements reg(pos can be "hi" or "lo").
 void Z80::DEC8(uint16_t &reg, std::string pos)
 {
-	uint16_t r = 0;
+	uint8_t r = 0;
 	if(pos == "hi")
 	{
 		r = GetHiRegister(reg);
@@ -2563,8 +2568,9 @@ void Z80::RLA()
 {
 	uint8_t a = GetHiRegister(registers[AF]);
 	uint8_t c = (a & 0x80) >> 7;
+	uint8_t f = GetFlag(FLAG_C);
 	a <<= 1;
-	a |= GetFlag(FLAG_C);
+	a |= f;
 	SetFlag(FLAG_Z, false);
 	SetFlag(FLAG_N, false);
 	SetFlag(FLAG_H, false);
@@ -2589,8 +2595,9 @@ void Z80::RRA()
 {
 	uint8_t a = GetHiRegister(registers[AF]);
 	uint8_t c = (a & 0x01) << 7;
+	uint8_t f = GetFlag(FLAG_C);
 	a >>= 1;
-	a |= GetFlag(FLAG_C);
+	a |= f;
 	SetFlag(FLAG_Z, false);
 	SetFlag(FLAG_N, false);
 	SetFlag(FLAG_H, false);
@@ -2645,18 +2652,19 @@ void Z80::RL(uint16_t &reg, std::string pos)
 {
 	uint8_t r = 0;
 	uint8_t c = (r & 0x80) >> 7;
+	uint8_t f = GetFlag(FLAG_C);
 	if(pos == "hi")
 	{
 		r = GetHiRegister(reg);
 		r <<= 1;
-		r |= GetFlag(FLAG_C);
+		r |= f;
 		SetHiRegister(reg, r);
 	}
 	else if(pos == "lo")
 	{
 		r = GetLoRegister(reg);
 		r <<= 1;
-		r |= GetFlag(FLAG_C);
+		r |= f;
 		SetLoRegister(reg, r);
 	}
 	else
@@ -2674,8 +2682,9 @@ void Z80::RL()
 {
 	uint8_t data = ReadMem(registers[HL]);
 	uint8_t c = (data & 0x80) >> 7;
+	uint8_t f = GetFlag(FLAG_C);
 	data <<= 1;
-	data |= GetFlag(FLAG_C);
+	data |= f;
 	WriteMem(registers[HL], data);
 	SetFlag(FLAG_Z, data == 0);
 	SetFlag(FLAG_N, false);
@@ -2731,18 +2740,19 @@ void Z80::RR(uint16_t &reg, std::string pos)
 {
 	uint8_t r = 0;
 	uint8_t c = (r & 0x01) << 7;
+	uint8_t f = GetFlag(FLAG_C);
 	if(pos == "hi")
 	{
 		r = GetHiRegister(reg);
 		r >>= 1;
-		r |= GetFlag(FLAG_C);
+		r |= f;
 		SetHiRegister(reg, r);
 	}
 	else if(pos == "lo")
 	{
 		r = GetLoRegister(reg);
 		r >>= 1;
-		r |= GetFlag(FLAG_C);
+		r |= f;
 		SetLoRegister(reg, r);
 	}
 	else
@@ -2760,8 +2770,9 @@ void Z80::RR()
 {
 	uint8_t data = ReadMem(registers[HL]);
 	uint8_t c = (data & 0x01) << 7;
+	uint8_t f = GetFlag(FLAG_C);
 	data >>= 1;
-	data |= GetFlag(FLAG_C);
+	data |= f;
 	WriteMem(registers[HL], data);
 	SetFlag(FLAG_Z, data == 0);
 	SetFlag(FLAG_N, false);
@@ -3089,9 +3100,9 @@ uint8_t Z80::JP(rel_jp_flag f, uint16_t addr)
 		break;
 	default:
 		std::cout << "ERROR:JP::INVALID_POS\n";
-		return 0;
 		break;
 	}
+	return 0;
 }
 
 // Relative jump.
@@ -3135,8 +3146,9 @@ uint8_t Z80::JR(rel_jp_flag f, int8_t d)
 		break;
 	default:
 		std::cout << "ERROR:JR::INVALID_POS\n";
-		return 0;
+		break;
 	}
+	return 0;
 }
 
 // Call to nn.
@@ -3181,8 +3193,9 @@ uint8_t Z80::CALL(rel_jp_flag f, uint16_t nn)
 		break;
 	default:
 		std::cout << "ERROR:CALL::INVALID_POS\n";
-		return 0;
+		break;
 	}
+	return 0;
 }
 
 // Return from a subroutine.
@@ -3226,8 +3239,9 @@ uint8_t Z80::RET(rel_jp_flag f)
 		break;
 	default:
 		std::cout << "ERROR:RET::INVALID_POS\n";
-		return 0;
+		break;
 	}
+	return 0;
 }
 
 // Return from a subroutine and enable interrupts.
