@@ -1517,6 +1517,71 @@ uint8_t Z80::PrefixCB(uint8_t opcode)
 		SRL(registers[AF], "hi");
 		count = 8;
 		break;
+	// 4x
+	case 0x40:
+		BIT(registers[BC], "hi", 0);
+		count = 8;
+		break;
+	case 0x41:
+		BIT(registers[BC], "lo", 0);
+		count = 8;
+		break;
+	case 0x42:
+		BIT(registers[DE], "hi", 0);
+		count = 8;
+		break;
+	case 0x43:
+		BIT(registers[DE], "lo", 0);
+		count = 8;
+		break;
+	case 0x44:
+		BIT(registers[HL], "hi", 0);
+		count = 8;
+		break;
+	case 0x45:
+		BIT(registers[HL], "lo", 0);
+		count = 8;
+		break;
+	case 0x46:
+		BIT(0);
+		count = 16;
+		break;
+	case 0x47:
+		BIT(registers[AF], "hi", 0);
+		count = 8;
+		break;
+	case 0x48:
+		BIT(registers[BC], "hi", 1);
+		count = 8;
+		break;
+	case 0x49:
+		BIT(registers[BC], "lo", 1);
+		count = 8;
+		break;
+	case 0x4a:
+		BIT(registers[DE], "hi", 1);
+		count = 8;
+		break;
+	case 0x4b:
+		BIT(registers[DE], "lo", 1);
+		count = 8;
+		break;
+	case 0x4c:
+		BIT(registers[HL], "hi", 1);
+		count = 8;
+		break;
+	case 0x4d:
+		BIT(registers[HL], "lo", 1);
+		count = 8;
+		break;
+	case 0x4e:
+		BIT(1);
+		count = 16;
+		break;
+	case 0x4f:
+		BIT(registers[AF], "hi", 1);
+		count = 8;
+		break;
 	}
 	return count;
 }
