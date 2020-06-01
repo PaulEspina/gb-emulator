@@ -1022,7 +1022,7 @@ uint8_t Z80::Decode(uint8_t opcode)
 		break;
 	case 0xc6:
 		n = Fetch();
-		ADD8(n);
+		ADD8(n, false);
 		count = 8;
 		break;
 	case 0xc7:
@@ -1070,6 +1070,72 @@ uint8_t Z80::Decode(uint8_t opcode)
 		break;
 	case 0xcf:
 		RST(0x08);
+		count = 16;
+		break;
+	// Dx
+	case 0xd0:
+		count = RET(rel_jp_flag::NC);
+		count += 8;
+		break;
+	case 0xd1:
+		POP(registers[DE]);
+		count = 12;
+		break;
+	case 0xd2:
+		nn = Fetch();
+		nn <<= 8;
+		nn |= Fetch();
+		count = JP(rel_jp_flag::NC, nn);
+		count += 12;
+	case 0xd4:
+		nn = Fetch();
+		nn <<= 8;
+		nn |= Fetch();
+		count = CALL(rel_jp_flag::NC, nn);
+		count += 12;
+		break;
+	case 0xd5:
+		PUSH(registers[DE]);
+		count = 16;
+		break;
+	case 0xd6:
+		n = Fetch();
+		SUB(n, false);
+		count = 8;
+		break;
+	case 0xd7:
+		RST(0x10);
+		count = 16;
+		break;
+	case 0xd8:
+		count = RET(rel_jp_flag::C);
+		count += 8;
+		break;
+	case 0xd9:
+		RETI();
+		count = 16;
+		break;
+	case 0xda:
+		nn = Fetch();
+		nn <<= 8;
+		nn |= Fetch();
+		count = JP(rel_jp_flag::C, nn);
+		count += 12;
+		break;
+	case 0xdc:
+		nn = Fetch();
+		nn <<= 8;
+		nn |= Fetch();
+		count = CALL(rel_jp_flag::C, nn);
+		count += 12;
+		break;
+	case 0xde:
+		n = Fetch();
+		SUB(n, true);
+		count = 8;
+		break;
+	case 0xdf:
+		RST(0x18);
 		count = 16;
 		break;
 	}
