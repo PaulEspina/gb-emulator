@@ -986,8 +986,99 @@ uint8_t Z80::Decode(uint8_t opcode)
 		CP(GetHiRegister(registers[AF]));
 		count = 4;
 		break;
+	// Cx
+	case 0xc0:
+		count = RET(rel_jp_flag::NZ);
+		count += 8;
+		break;
+	case 0xc1:
+		POP(registers[BC]);
+		count = 12;
+		break;
+	case 0xc2:
+		nn = Fetch();
+		nn <<= 8;
+		nn |= Fetch();
+		count = JP(rel_jp_flag::NZ, nn);
+		count += 12;
+		break;
+	case 0xc3:
+		nn = Fetch();
+		nn <<= 8;
+		nn |= Fetch();
+		JP(nn);
+		count = 16;
+		break;
+	case 0xc4:
+		nn = Fetch();
+		nn <<= 8;
+		nn |= Fetch();
+		count = CALL(rel_jp_flag::NZ, nn);
+		count += 12;
+		break;
+	case 0xc5:
+		PUSH(registers[BC]);
+		count = 16;
+		break;
+	case 0xc6:
+		n = Fetch();
+		ADD8(n);
+		count = 8;
+		break;
+	case 0xc7:
+		RST(0x0);
+		count = 16;
+		break;
+	case 0xc8:
+		count = RET(rel_jp_flag::Z);
+		count += 8;
+		break;
+	case 0xc9:
+		RET();
+		count = 16;
+		break;
+	case 0xca:
+		nn = Fetch();
+		nn <<= 8;
+		nn |= Fetch();
+		count = JP(rel_jp_flag::Z, nn);
+		count += 12;
+		break;
+	case 0xcb:
+		n = Fetch();
+		count = PrefixCB(n);
+		count += 4;
+		break;
+	case 0xcc:
+		nn = Fetch();
+		nn <<= 8;
+		nn |= Fetch();
+		count = CALL(rel_jp_flag::Z, nn);
+		count += 12;
+		break;
+	case 0xcd:
+		nn = Fetch();
+		nn <<= 8;
+		nn |= Fetch();
+		CALL(nn);
+		count = 24;
+		break;
+	case 0xce:
+		n = Fetch();
+		ADD8(n, true);
+		count = 8;
+		break;
+	case 0xcf:
+		RST(0x08);
+		count = 16;
+		break;
 	}
 	return count;
+}
+
+uint8_t Z80::PrefixCB(uint8_t opcode)
+{
+	return uint8_t();
 }
 
 /////////////////////////////////////////////////////////////
