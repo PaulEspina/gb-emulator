@@ -919,6 +919,73 @@ uint8_t Z80::Decode(uint8_t opcode)
 		XOR(GetHiRegister(registers[AF]));
 		count = 4;
 		break;
+	// Bx
+	case 0xb0:
+		OR(GetHiRegister(registers[BC]));
+		count = 4;
+		break;
+	case 0xb1:
+		OR(GetLoRegister(registers[BC]));
+		count = 4;
+		break;
+	case 0xb2:
+		OR(GetHiRegister(registers[DE]));
+		count = 4;
+		break;
+	case 0xb3:
+		OR(GetLoRegister(registers[DE]));
+		count = 4;
+		break;
+	case 0xb4:
+		OR(GetHiRegister(registers[HL]));
+		count = 4;
+		break;
+	case 0xb5:
+		OR(GetLoRegister(registers[HL]));
+		count = 4;
+		break;
+	case 0xb6:
+		n = ReadMem(registers[HL]);
+		OR(n);
+		count = 8;
+		break;
+	case 0xb7:
+		OR(GetHiRegister(registers[AF]));
+		count = 4;
+		break;
+	case 0xb8:
+		CP(GetHiRegister(registers[BC]));
+		count = 4;
+		break;
+	case 0xb9:
+		CP(GetLoRegister(registers[BC]));
+		count = 4;
+		break;
+	case 0xba:
+		CP(GetHiRegister(registers[DE]));
+		count = 4;
+		break;
+	case 0xbb:
+		CP(GetLoRegister(registers[DE]));
+		count = 4;
+		break;
+	case 0xbc:
+		CP(GetHiRegister(registers[HL]));
+		count = 4;
+		break;
+	case 0xbd:
+		CP(GetLoRegister(registers[HL]));
+		count = 4;
+		break;
+	case 0xbe:
+		n = ReadMem(registers[HL]);
+		CP(n);
+		count = 8;
+		break;
+	case 0xbf:
+		CP(GetHiRegister(registers[AF]));
+		count = 4;
+		break;
 	}
 	return count;
 }
