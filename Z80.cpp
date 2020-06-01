@@ -1777,6 +1777,526 @@ uint8_t Z80::PrefixCB(uint8_t opcode)
 		BIT(registers[AF], "hi", 7);
 		count = 8;
 		break;
+	// 8x
+	case 0x80:
+		RES(registers[BC], "hi", 0);
+		count = 8;
+		break;
+	case 0x81:
+		RES(registers[BC], "lo", 0);
+		count = 8;
+		break;
+	case 0x82:
+		RES(registers[DE], "hi", 0);
+		count = 8;
+		break;
+	case 0x83:
+		RES(registers[DE], "lo", 0);
+		count = 8;
+		break;
+	case 0x84:
+		RES(registers[HL], "hi", 0);
+		count = 8;
+		break;
+	case 0x85:
+		RES(registers[HL], "lo", 0);
+		count = 8;
+		break;
+	case 0x86:
+		RES(0);
+		count = 16;
+		break;
+	case 0x87:
+		RES(registers[AF], "hi", 0);
+		count = 8;
+		break;
+	case 0x88:
+		RES(registers[BC], "hi", 1);
+		count = 8;
+		break;
+	case 0x89:
+		RES(registers[BC], "lo", 1);
+		count = 8;
+		break;
+	case 0x8a:
+		RES(registers[DE], "hi", 1);
+		count = 8;
+		break;
+	case 0x8b:
+		RES(registers[DE], "lo", 1);
+		count = 8;
+		break;
+	case 0x8c:
+		RES(registers[HL], "hi", 1);
+		count = 8;
+		break;
+	case 0x8d:
+		RES(registers[HL], "lo", 1);
+		count = 8;
+		break;
+	case 0x8e:
+		RES(1);
+		count = 16;
+		break;
+	case 0x8f:
+		RES(registers[AF], "hi", 1);
+		count = 8;
+		break;
+	// 9x
+	case 0x90:
+		RES(registers[BC], "hi", 2);
+		count = 8;
+		break;
+	case 0x91:
+		RES(registers[BC], "lo", 2);
+		count = 8;
+		break;
+	case 0x92:
+		RES(registers[DE], "hi", 2);
+		count = 8;
+		break;
+	case 0x93:
+		RES(registers[DE], "lo", 2);
+		count = 8;
+		break;
+	case 0x94:
+		RES(registers[HL], "hi", 2);
+		count = 8;
+		break;
+	case 0x95:
+		RES(registers[HL], "lo", 2);
+		count = 8;
+		break;
+	case 0x96:
+		RES(2);
+		count = 16;
+		break;
+	case 0x97:
+		RES(registers[AF], "hi", 2);
+		count = 8;
+		break;
+	case 0x98:
+		RES(registers[BC], "hi", 3);
+		count = 8;
+		break;
+	case 0x99:
+		RES(registers[BC], "lo", 3);
+		count = 8;
+		break;
+	case 0x9a:
+		RES(registers[DE], "hi", 3);
+		count = 8;
+		break;
+	case 0x9b:
+		RES(registers[DE], "lo", 3);
+		count = 8;
+		break;
+	case 0x9c:
+		RES(registers[HL], "hi", 3);
+		count = 8;
+		break;
+	case 0x9d:
+		RES(registers[HL], "lo", 3);
+		count = 8;
+		break;
+	case 0x9e:
+		RES(3);
+		count = 16;
+		break;
+	case 0x9f:
+		RES(registers[AF], "hi", 3);
+		count = 8;
+		break;
+	// Ax
+	case 0xa0:
+		RES(registers[BC], "hi", 4);
+		count = 8;
+		break;
+	case 0xa1:
+		RES(registers[BC], "lo", 4);
+		count = 8;
+		break;
+	case 0xa2:
+		RES(registers[DE], "hi", 4);
+		count = 8;
+		break;
+	case 0xa3:
+		RES(registers[DE], "lo", 4);
+		count = 8;
+		break;
+	case 0xa4:
+		RES(registers[HL], "hi", 4);
+		count = 8;
+		break;
+	case 0xa5:
+		RES(registers[HL], "lo", 4);
+		count = 8;
+		break;
+	case 0xa6:
+		RES(4);
+		count = 16;
+		break;
+	case 0xa7:
+		RES(registers[AF], "hi", 4);
+		count = 8;
+		break;
+	case 0xa8:
+		RES(registers[BC], "hi", 5);
+		count = 8;
+		break;
+	case 0xa9:
+		RES(registers[BC], "lo", 5);
+		count = 8;
+		break;
+	case 0xaa:
+		RES(registers[DE], "hi", 5);
+		count = 8;
+		break;
+	case 0xab:
+		RES(registers[DE], "lo", 5);
+		count = 8;
+		break;
+	case 0xac:
+		RES(registers[HL], "hi", 5);
+		count = 8;
+		break;
+	case 0xad:
+		RES(registers[HL], "lo", 5);
+		count = 8;
+		break;
+	case 0xae:
+		RES(5);
+		count = 16;
+		break;
+	case 0xaf:
+		RES(registers[AF], "hi", 5);
+		count = 8;
+		break;
+	// Bx
+	case 0xb0:
+		RES(registers[BC], "hi", 6);
+		count = 8;
+		break;
+	case 0xb1:
+		RES(registers[BC], "lo", 6);
+		count = 8;
+		break;
+	case 0xb2:
+		RES(registers[DE], "hi", 6);
+		count = 8;
+		break;
+	case 0xb3:
+		RES(registers[DE], "lo", 6);
+		count = 8;
+		break;
+	case 0xb4:
+		RES(registers[HL], "hi", 6);
+		count = 8;
+		break;
+	case 0xb5:
+		RES(registers[HL], "lo", 6);
+		count = 8;
+		break;
+	case 0xb6:
+		RES(6);
+		count = 16;
+		break;
+	case 0xb7:
+		RES(registers[AF], "hi", 6);
+		count = 8;
+		break;
+	case 0xb8:
+		RES(registers[BC], "hi", 7);
+		count = 8;
+		break;
+	case 0xb9:
+		RES(registers[BC], "lo", 7);
+		count = 8;
+		break;
+	case 0xba:
+		RES(registers[DE], "hi", 7);
+		count = 8;
+		break;
+	case 0xbb:
+		RES(registers[DE], "lo", 7);
+		count = 8;
+		break;
+	case 0xbc:
+		RES(registers[HL], "hi", 7);
+		count = 8;
+		break;
+	case 0xbd:
+		RES(registers[HL], "lo", 7);
+		count = 8;
+		break;
+	case 0xbe:
+		RES(7);
+		count = 16;
+		break;
+	case 0xbf:
+		RES(registers[AF], "hi", 7);
+		count = 8;
+		break;
+	// Cx
+	case 0xc0:
+		SET(registers[BC], "hi", 0);
+		count = 8;
+		break;
+	case 0xc1:
+		SET(registers[BC], "lo", 0);
+		count = 8;
+		break;
+	case 0xc2:
+		SET(registers[DE], "hi", 0);
+		count = 8;
+		break;
+	case 0xc3:
+		SET(registers[DE], "lo", 0);
+		count = 8;
+		break;
+	case 0xc4:
+		SET(registers[HL], "hi", 0);
+		count = 8;
+		break;
+	case 0xc5:
+		SET(registers[HL], "lo", 0);
+		count = 8;
+		break;
+	case 0xc6:
+		SET(0);
+		count = 16;
+		break;
+	case 0xc7:
+		SET(registers[AF], "hi", 0);
+		count = 8;
+		break;
+	case 0xc8:
+		SET(registers[BC], "hi", 1);
+		count = 8;
+		break;
+	case 0xc9:
+		SET(registers[BC], "lo", 1);
+		count = 8;
+		break;
+	case 0xca:
+		SET(registers[DE], "hi", 1);
+		count = 8;
+		break;
+	case 0xcb:
+		SET(registers[DE], "lo", 1);
+		count = 8;
+		break;
+	case 0xcc:
+		SET(registers[HL], "hi", 1);
+		count = 8;
+		break;
+	case 0xcd:
+		SET(registers[HL], "lo", 1);
+		count = 8;
+		break;
+	case 0xce:
+		SET(1);
+		count = 16;
+		break;
+	case 0xcf:
+		SET(registers[AF], "hi", 1);
+		count = 8;
+		break;
+	// Dx
+	case 0xd0:
+		SET(registers[BC], "hi", 2);
+		count = 8;
+		break;
+	case 0xd1:
+		SET(registers[BC], "lo", 2);
+		count = 8;
+		break;
+	case 0xd2:
+		SET(registers[DE], "hi", 2);
+		count = 8;
+		break;
+	case 0xd3:
+		SET(registers[DE], "lo", 2);
+		count = 8;
+		break;
+	case 0xd4:
+		SET(registers[HL], "hi", 2);
+		count = 8;
+		break;
+	case 0xd5:
+		SET(registers[HL], "lo", 2);
+		count = 8;
+		break;
+	case 0xd6:
+		SET(2);
+		count = 16;
+		break;
+	case 0xd7:
+		SET(registers[AF], "hi", 2);
+		count = 8;
+		break;
+	case 0xd8:
+		SET(registers[BC], "hi", 3);
+		count = 8;
+		break;
+	case 0xd9:
+		SET(registers[BC], "lo", 3);
+		count = 8;
+		break;
+	case 0xda:
+		SET(registers[DE], "hi", 3);
+		count = 8;
+		break;
+	case 0xdb:
+		SET(registers[DE], "lo", 3);
+		count = 8;
+		break;
+	case 0xdc:
+		SET(registers[HL], "hi", 3);
+		count = 8;
+		break;
+	case 0xdd:
+		SET(registers[HL], "lo", 3);
+		count = 8;
+		break;
+	case 0xde:
+		SET(3);
+		count = 16;
+		break;
+	case 0xdf:
+		SET(registers[AF], "hi", 3);
+		count = 8;
+		break;
+	// Ex
+	case 0xe0:
+		SET(registers[BC], "hi", 4);
+		count = 8;
+		break;
+	case 0xe1:
+		SET(registers[BC], "lo", 4);
+		count = 8;
+		break;
+	case 0xe2:
+		SET(registers[DE], "hi", 4);
+		count = 8;
+		break;
+	case 0xe3:
+		SET(registers[DE], "lo", 4);
+		count = 8;
+		break;
+	case 0xe4:
+		SET(registers[HL], "hi", 4);
+		count = 8;
+		break;
+	case 0xe5:
+		SET(registers[HL], "lo", 4);
+		count = 8;
+		break;
+	case 0xe6:
+		SET(4);
+		count = 16;
+		break;
+	case 0xe7:
+		SET(registers[AF], "hi", 4);
+		count = 8;
+		break;
+	case 0xe8:
+		SET(registers[BC], "hi", 5);
+		count = 8;
+		break;
+	case 0xe9:
+		SET(registers[BC], "lo", 5);
+		count = 8;
+		break;
+	case 0xea:
+		SET(registers[DE], "hi", 5);
+		count = 8;
+		break;
+	case 0xeb:
+		SET(registers[DE], "lo", 5);
+		count = 8;
+		break;
+	case 0xec:
+		SET(registers[HL], "hi", 5);
+		count = 8;
+		break;
+	case 0xed:
+		SET(registers[HL], "lo", 5);
+		count = 8;
+		break;
+	case 0xee:
+		SET(5);
+		count = 16;
+		break;
+	case 0xef:
+		SET(registers[AF], "hi", 5);
+		count = 8;
+		break;
+	// Fx
+	case 0xf0:
+		SET(registers[BC], "hi", 6);
+		count = 8;
+		break;
+	case 0xf1:
+		SET(registers[BC], "lo", 6);
+		count = 8;
+		break;
+	case 0xf2:
+		SET(registers[DE], "hi", 6);
+		count = 8;
+		break;
+	case 0xf3:
+		SET(registers[DE], "lo", 6);
+		count = 8;
+		break;
+	case 0xf4:
+		SET(registers[HL], "hi", 6);
+		count = 8;
+		break;
+	case 0xf5:
+		SET(registers[HL], "lo", 6);
+		count = 8;
+		break;
+	case 0xf6:
+		SET(6);
+		count = 16;
+		break;
+	case 0xf7:
+		SET(registers[AF], "hi", 6);
+		count = 8;
+		break;
+	case 0xf8:
+		SET(registers[BC], "hi", 7);
+		count = 8;
+		break;
+	case 0xf9:
+		SET(registers[BC], "lo", 7);
+		count = 8;
+		break;
+	case 0xfa:
+		SET(registers[DE], "hi", 7);
+		count = 8;
+		break;
+	case 0xfb:
+		SET(registers[DE], "lo", 7);
+		count = 8;
+		break;
+	case 0xfc:
+		SET(registers[HL], "hi", 7);
+		count = 8;
+		break;
+	case 0xfd:
+		SET(registers[HL], "lo", 7);
+		count = 8;
+		break;
+	case 0xfe:
+		SET(7);
+		count = 16;
+		break;
+	case 0xff:
+		SET(registers[AF], "hi", 7);
+		count = 8;
+		break;
 	}
 	return count;
 }
