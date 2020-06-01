@@ -1387,6 +1387,71 @@ uint8_t Z80::PrefixCB(uint8_t opcode)
 		RR(registers[AF], "hi");
 		count = 8;
 		break;
+	// 2x
+	case 0x20:
+		SLA(registers[BC], "hi");
+		count = 8;
+		break;
+	case 0x21:
+		SLA(registers[BC], "lo");
+		count = 8;
+		break;
+	case 0x22:
+		SLA(registers[DE], "hi");
+		count = 8;
+		break;
+	case 0x23:
+		SLA(registers[DE], "lo");
+		count = 8;
+		break;
+	case 0x24:
+		SLA(registers[HL], "hi");
+		count = 8;
+		break;
+	case 0x25:
+		SLA(registers[HL], "lo");
+		count = 8;
+		break;
+	case 0x26:
+		SLA();
+		count = 16;
+		break;
+	case 0x27:
+		SLA(registers[AF], "hi");
+		count = 8;
+		break;
+	case 0x28:
+		SRA(registers[BC], "hi");
+		count = 8;
+		break;
+	case 0x29:
+		SRA(registers[BC], "lo");
+		count = 8;
+		break;
+	case 0x2a:
+		SRA(registers[DE], "hi");
+		count = 8;
+		break;
+	case 0x2b:
+		SRA(registers[DE], "lo");
+		count = 8;
+		break;
+	case 0x2c:
+		SRA(registers[HL], "hi");
+		count = 8;
+		break;
+	case 0x2d:
+		SRA(registers[HL], "lo");
+		count = 8;
+		break;
+	case 0x2e:
+		SRA();
+		count = 16;
+		break;
+	case 0x2f:
+		SRA(registers[AF], "hi");
+		count = 8;
+		break;
 	}
 	return count;
 }
