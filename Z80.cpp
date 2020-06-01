@@ -1045,9 +1045,7 @@ uint8_t Z80::Decode(uint8_t opcode)
 		count += 12;
 		break;
 	case 0xcb:
-		n = Fetch();
 		count = PrefixCB(n);
-		count += 4;
 		break;
 	case 0xcc:
 		nn = Fetch();
@@ -1256,7 +1254,76 @@ uint8_t Z80::Decode(uint8_t opcode)
 
 uint8_t Z80::PrefixCB(uint8_t opcode)
 {
-	return uint8_t();
+	uint8_t count = 0;
+	switch(opcode)
+	{
+	// 0x
+	case 0x0:
+		RLC(registers[BC], "hi");
+		count = 8;
+		break;
+	case 0x1:
+		RLC(registers[BC], "lo");
+		count = 8;
+		break;
+	case 0x2:
+		RLC(registers[DE], "hi");
+		count = 8;
+		break;
+	case 0x3:
+		RLC(registers[DE], "lo");
+		count = 8;
+		break;
+	case 0x4:
+		RLC(registers[HL], "hi");
+		count = 8;
+		break;
+	case 0x5:
+		RLC(registers[HL], "lo");
+		count = 8;
+		break;
+	case 0x6:
+		RLC();
+		count = 16;
+		break;
+	case 0x7:
+		RLC(registers[AF], "hi");
+		count = 8;
+		break;
+	case 0x8:
+		RRC(registers[BC], "hi");
+		count = 8;
+		break;
+	case 0x9:
+		RRC(registers[BC], "lo");
+		count = 8;
+		break;
+	case 0xa:
+		RRC(registers[DE], "hi");
+		count = 8;
+		break;
+	case 0xb:
+		RRC(registers[DE], "lo");
+		count = 8;
+		break;
+	case 0xc:
+		RRC(registers[HL], "hi");
+		count = 8;
+		break;
+	case 0xd:
+		RRC(registers[HL], "lo");
+		count = 8;
+		break;
+	case 0xe:
+		RLC();
+		count = 16;
+		break;
+	case 0xf:
+		RRC(registers[AF], "hi");
+		count = 8;
+		break;
+	}
+	return count;
 }
 
 /////////////////////////////////////////////////////////////
