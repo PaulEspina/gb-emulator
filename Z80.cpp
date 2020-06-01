@@ -1138,6 +1138,58 @@ uint8_t Z80::Decode(uint8_t opcode)
 		RST(0x18);
 		count = 16;
 		break;
+	// Ex
+	case 0xe0:
+		n = Fetch();
+		LD8(0xff00 + n, GetHiRegister(registers[AF]));
+		count = 12;
+		break;
+	case 0xe1:
+		POP(registers[HL]);
+		count = 12;
+		break;
+	case 0xe2:
+		LD8(0xff00 + GetLoRegister(registers[BC]), GetHiRegister(registers[AF]));
+		count = 8;
+		break;
+	case 0xe5:
+		PUSH(registers[HL]);
+		count = 16;
+		break;
+	case 0xe6:
+		n = Fetch();
+		AND(n);
+		count = 8;
+		break;
+	case 0xe7:
+		RST(0x20);
+		count = 16;
+		break;
+	case 0xe8:
+		n = Fetch();
+		ADD16((int8_t) n);
+		count = 16;
+		break;
+	case 0xe9:
+		JP();
+		count = 4;
+		break;
+	case 0xea:
+		nn = Fetch();
+		nn <<= 8;
+		nn |= Fetch();
+		LD16(nn, GetHiRegister(registers[AF]));
+		count = 16;
+		break;
+	case 0xee:
+		n = Fetch();
+		XOR(n);
+		count = 8;
+		break;
+	case 0xef:
+		RST(0x28);
+		count = 16;
+		break;
 	}
 	return count;
 }
@@ -1897,7 +1949,7 @@ void Z80::JP(uint16_t nn)
 // Jump to HL.
 void Z80::JP()
 {
-	pc = registers[HL];
+	pc = ReadMem(registers[HL]);
 }
 
 // Conditional jump, f can be NZ, Z, NC, C.|
