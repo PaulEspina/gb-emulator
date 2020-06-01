@@ -1322,6 +1322,71 @@ uint8_t Z80::PrefixCB(uint8_t opcode)
 		RRC(registers[AF], "hi");
 		count = 8;
 		break;
+	// 1x
+	case 0x10:
+		RR(registers[BC], "hi");
+		count = 8;
+		break;
+	case 0x11:
+		RR(registers[BC], "lo");
+		count = 8;
+		break;
+	case 0x12:
+		RR(registers[DE], "hi");
+		count = 8;
+		break;
+	case 0x13:
+		RR(registers[DE], "lo");
+		count = 8;
+		break;
+	case 0x14:
+		RR(registers[HL], "hi");
+		count = 8;
+		break;
+	case 0x15:
+		RR(registers[HL], "lo");
+		count = 8;
+		break;
+	case 0x16:
+		RR();
+		count = 16;
+		break;
+	case 0x17:
+		RR(registers[AF], "hi");
+		count = 8;
+		break;
+	case 0x18:
+		RR(registers[BC], "hi");
+		count = 8;
+		break;
+	case 0x19:
+		RR(registers[BC], "lo");
+		count = 8;
+		break;
+	case 0x1a:
+		RR(registers[DE], "hi");
+		count = 8;
+		break;
+	case 0x1b:
+		RR(registers[DE], "lo");
+		count = 8;
+		break;
+	case 0x1c:
+		RR(registers[HL], "hi");
+		count = 8;
+		break;
+	case 0x1d:
+		RR(registers[HL], "lo");
+		count = 8;
+		break;
+	case 0x1e:
+		RR();
+		count = 16;
+		break;
+	case 0x1f:
+		RR(registers[AF], "hi");
+		count = 8;
+		break;
 	}
 	return count;
 }
