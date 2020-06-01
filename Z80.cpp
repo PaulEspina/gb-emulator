@@ -1190,6 +1190,66 @@ uint8_t Z80::Decode(uint8_t opcode)
 		RST(0x28);
 		count = 16;
 		break;
+	// Fx
+	case 0xf0:
+		n = Fetch();
+		LD8(registers[AF], "hi", 0xff00 + n);
+		count = 12;
+		break;
+	case 0xf1:
+		POP(registers[AF]);
+		count = 12;
+		break;
+	case 0xf2:
+		LD8(registers[AF], "hi", ReadMem(0xff00 + GetLoRegister(registers[BC])));
+		count = 8;
+		break;
+	case 0xf3:
+		DI();
+		count = 4;
+		break;
+	case 0xf5:
+		PUSH(registers[AF]);
+		count = 16;
+		break;
+	case 0xf6:
+		n = Fetch();
+		OR(n);
+		count = 8;
+		break;
+	case 0xf7:
+		RST(0x30);
+		count = 16;
+		break;
+	case 0xf8:
+		n = Fetch();
+		LD16(registers[HL], sp + (int8_t) n);
+		count = 12;
+		break;
+	case 0xf9:
+		LD16(sp, registers[HL]);
+		count = 8;
+		break;
+	case 0xfa:
+		nn = Fetch();
+		nn <<= 8;
+		nn |= Fetch();
+		LD8(registers[AF], "hi", ReadMem(nn));
+		count = 16;
+		break;
+	case 0xfb:
+		EI();
+		count = 4;
+		break;
+	case 0xfe:
+		n = Fetch();
+		CP(n);
+		count = 8;
+		break;
+	case 0xff:
+		RST(0x38);
+		count = 16;
+		break;
 	}
 	return count;
 }
