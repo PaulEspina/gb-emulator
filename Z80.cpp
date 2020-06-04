@@ -3292,7 +3292,7 @@ void Z80::HALT()
 // Standby mode.
 void Z80::STOP()
 {
-	// TODO
+	pc--;
 }
 
 // disable interrupts, IME = false;
