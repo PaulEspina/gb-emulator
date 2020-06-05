@@ -56,12 +56,33 @@ bool Z80::LoadCartridge(std::string path)
 	return true;
 }
 
+void Z80::LoadInfo()
+{
+	switch(cartridge[0x0147])
+	{
+	case 0:
+		cartridgeType = CartridgeType::ROM;
+		break;
+	case 1:
+	case 2:
+	case 3:
+		cartridgeType = CartridgeType::MBC1;
+		break;
+	case 5:
+	case 6:
+		cartridgeType = CartridgeType::MBC2;
+		break;
+	default:
+		cartridgeType = CartridgeType::OTHER;
+	}
+}
+
 void Z80::Init()
 {
-	registers[0] = 0x01b0;
-	registers[1] = 0x0013;
-	registers[2] = 0x00d8;
-	registers[3] = 0x014d;
+	registers[AF] = 0x01b0;
+	registers[BC] = 0x0013;
+	registers[DE] = 0x00d8;
+	registers[HL] = 0x014d;
 	sp = 0xfffe;
 	pc = 0x100;
 	memset(&memory, 0, sizeof(memory));
@@ -79,7 +100,15 @@ uint8_t Z80::ReadMem(uint16_t addr)
 
 void Z80::WriteMem(uint16_t addr, uint8_t data)
 {
-	if(addr >= 0xa000 && addr <= 0x7fff)
+	if(addr < 0x8000)
+	{
+	}
+	else if((addr >= 0xe000) && (addr < 0xfe00))
+	{
+		memory[addr] = data;
+		WriteMem(addr - 0x2000, data);
+	}
+	else
 	{
 		memory[addr] = data;
 	}
@@ -305,7 +334,7 @@ uint8_t Z80::Decode(uint8_t opcode)
 	// 2x
 	case 0x20:
 		n = Fetch();
-		count = JR(rel_jp_flag::NZ, n);
+		count = JR(RelFlag::NZ, n);
 		count += 8;
 		break;
 	case 0x21:
@@ -343,7 +372,7 @@ uint8_t Z80::Decode(uint8_t opcode)
 		break;
 	case 0x28:
 		n = Fetch();
-		count = JR(rel_jp_flag::Z, n);
+		count = JR(RelFlag::Z, n);
 		count += 8;
 		break;
 	case 0x29:
@@ -380,7 +409,7 @@ uint8_t Z80::Decode(uint8_t opcode)
 	// 3x
 	case 0x30:
 		n = Fetch();
-		count = JR(rel_jp_flag::NC, n);
+		count = JR(RelFlag::NC, n);
 		count += 8;
 		break;
 	case 0x31:
@@ -418,7 +447,7 @@ uint8_t Z80::Decode(uint8_t opcode)
 		break;
 	case 0x38:
 		n = Fetch();
-		count = JR(rel_jp_flag::C, n);
+		count = JR(RelFlag::C, n);
 		count += 8;
 		break;
 	case 0x39:
@@ -989,7 +1018,7 @@ uint8_t Z80::Decode(uint8_t opcode)
 		break;
 	// Cx
 	case 0xc0:
-		count = RET(rel_jp_flag::NZ);
+		count = RET(RelFlag::NZ);
 		count += 8;
 		break;
 	case 0xc1:
@@ -1000,7 +1029,7 @@ uint8_t Z80::Decode(uint8_t opcode)
 		nn = Fetch();
 		nn <<= 8;
 		nn |= Fetch();
-		count = JP(rel_jp_flag::NZ, nn);
+		count = JP(RelFlag::NZ, nn);
 		count += 12;
 		break;
 	case 0xc3:
@@ -1014,7 +1043,7 @@ uint8_t Z80::Decode(uint8_t opcode)
 		nn = Fetch();
 		nn <<= 8;
 		nn |= Fetch();
-		count = CALL(rel_jp_flag::NZ, nn);
+		count = CALL(RelFlag::NZ, nn);
 		count += 12;
 		break;
 	case 0xc5:
@@ -1031,7 +1060,7 @@ uint8_t Z80::Decode(uint8_t opcode)
 		count = 16;
 		break;
 	case 0xc8:
-		count = RET(rel_jp_flag::Z);
+		count = RET(RelFlag::Z);
 		count += 8;
 		break;
 	case 0xc9:
@@ -1042,7 +1071,7 @@ uint8_t Z80::Decode(uint8_t opcode)
 		nn = Fetch();
 		nn <<= 8;
 		nn |= Fetch();
-		count = JP(rel_jp_flag::Z, nn);
+		count = JP(RelFlag::Z, nn);
 		count += 12;
 		break;
 	case 0xcb:
@@ -1053,7 +1082,7 @@ uint8_t Z80::Decode(uint8_t opcode)
 		nn = Fetch();
 		nn <<= 8;
 		nn |= Fetch();
-		count = CALL(rel_jp_flag::Z, nn);
+		count = CALL(RelFlag::Z, nn);
 		count += 12;
 		break;
 	case 0xcd:
@@ -1074,7 +1103,7 @@ uint8_t Z80::Decode(uint8_t opcode)
 		break;
 	// Dx
 	case 0xd0:
-		count = RET(rel_jp_flag::NC);
+		count = RET(RelFlag::NC);
 		count += 8;
 		break;
 	case 0xd1:
@@ -1085,13 +1114,13 @@ uint8_t Z80::Decode(uint8_t opcode)
 		nn = Fetch();
 		nn <<= 8;
 		nn |= Fetch();
-		count = JP(rel_jp_flag::NC, nn);
+		count = JP(RelFlag::NC, nn);
 		count += 12;
 	case 0xd4:
 		nn = Fetch();
 		nn <<= 8;
 		nn |= Fetch();
-		count = CALL(rel_jp_flag::NC, nn);
+		count = CALL(RelFlag::NC, nn);
 		count += 12;
 		break;
 	case 0xd5:
@@ -1108,7 +1137,7 @@ uint8_t Z80::Decode(uint8_t opcode)
 		count = 16;
 		break;
 	case 0xd8:
-		count = RET(rel_jp_flag::C);
+		count = RET(RelFlag::C);
 		count += 8;
 		break;
 	case 0xd9:
@@ -1119,14 +1148,14 @@ uint8_t Z80::Decode(uint8_t opcode)
 		nn = Fetch();
 		nn <<= 8;
 		nn |= Fetch();
-		count = JP(rel_jp_flag::C, nn);
+		count = JP(RelFlag::C, nn);
 		count += 12;
 		break;
 	case 0xdc:
 		nn = Fetch();
 		nn <<= 8;
 		nn |= Fetch();
-		count = CALL(rel_jp_flag::C, nn);
+		count = CALL(RelFlag::C, nn);
 		count += 12;
 		break;
 	case 0xde:
@@ -3066,32 +3095,32 @@ void Z80::JP()
 }
 
 // Conditional jump, f can be NZ, Z, NC, C.|
-uint8_t Z80::JP(rel_jp_flag f, uint16_t addr)
+uint8_t Z80::JP(RelFlag f, uint16_t addr)
 {
 	switch(f)
 	{
-	case rel_jp_flag::NZ:
+	case RelFlag::NZ:
 		if(!GetFlag(FLAG_Z))
 		{
 			JP(addr);
 			return 4;
 		}
 		break;
-	case rel_jp_flag::Z:
+	case RelFlag::Z:
 		if(GetFlag(FLAG_Z))
 		{
 			JP(addr);
 			return 4;
 		}
 		break;
-	case rel_jp_flag::NC:
+	case RelFlag::NC:
 		if(!GetFlag(FLAG_C))
 		{
 			JP(addr);
 			return 4;
 		}
 		break;
-	case rel_jp_flag::C:
+	case RelFlag::C:
 		if(GetFlag(FLAG_C))
 		{
 			JP(addr);
@@ -3112,32 +3141,32 @@ void Z80::JR(int8_t d)
 }
 
 // Conditional relative jump, f can be NZ, Z, NC, C.
-uint8_t Z80::JR(rel_jp_flag f, int8_t d)
+uint8_t Z80::JR(RelFlag f, int8_t d)
 {
 	switch(f)
 	{
-	case rel_jp_flag::NZ:
+	case RelFlag::NZ:
 		if(!GetFlag(FLAG_Z))
 		{
 			JR(d);
 			return 4;
 		}
 		break;
-	case rel_jp_flag::Z:
+	case RelFlag::Z:
 		if(GetFlag(FLAG_Z))
 		{
 			JR(d);
 			return 4;
 		}
 		break;
-	case rel_jp_flag::NC:
+	case RelFlag::NC:
 		if(!GetFlag(FLAG_C))
 		{
 			JR(d);
 			return 4;
 		}
 		break;
-	case rel_jp_flag::C:
+	case RelFlag::C:
 		if(GetFlag(FLAG_C))
 		{
 			JR(d);
@@ -3159,32 +3188,32 @@ void Z80::CALL(uint16_t nn)
 }
 
 // Conditional call, f can be NZ, Z, NC, C.
-uint8_t Z80::CALL(rel_jp_flag f, uint16_t nn)
+uint8_t Z80::CALL(RelFlag f, uint16_t nn)
 {
 	switch(f)
 	{
-	case rel_jp_flag::NZ:
+	case RelFlag::NZ:
 		if(!GetFlag(FLAG_Z))
 		{
 			CALL(nn);
 			return 12;
 		}
 		break;
-	case rel_jp_flag::Z:
+	case RelFlag::Z:
 		if(GetFlag(FLAG_Z))
 		{
 			CALL(nn);
 			return 12;
 		}
 		break;
-	case rel_jp_flag::NC:
+	case RelFlag::NC:
 		if(!GetFlag(FLAG_C))
 		{
 			CALL(nn);
 			return 12;
 		}
 		break;
-	case rel_jp_flag::C:
+	case RelFlag::C:
 		if(GetFlag(FLAG_C))
 		{
 			CALL(nn);
@@ -3205,32 +3234,32 @@ void Z80::RET()
 }
 
 // Conditional return, f can be NZ, Z, NC, C.
-uint8_t Z80::RET(rel_jp_flag f)
+uint8_t Z80::RET(RelFlag f)
 {
 	switch(f)
 	{
-	case rel_jp_flag::NZ:
+	case RelFlag::NZ:
 		if(!GetFlag(FLAG_Z))
 		{
 			RET();
 			return 12;
 		}
 		break;
-	case rel_jp_flag::Z:
+	case RelFlag::Z:
 		if(GetFlag(FLAG_Z))
 		{
 			RET();
 			return 12;
 		}
 		break;
-	case rel_jp_flag::NC:
+	case RelFlag::NC:
 		if(!GetFlag(FLAG_C))
 		{
 			RET();
 			return 12;
 		}
 		break;
-	case rel_jp_flag::C:
+	case RelFlag::C:
 		if(GetFlag(FLAG_C))
 		{
 			RET();

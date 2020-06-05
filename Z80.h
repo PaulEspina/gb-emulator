@@ -43,8 +43,11 @@ class Z80
 public:
 	Z80();
 	bool LoadCartridge(std::string path);
+	void LoadInfo();
 	void Init();
 private:
+	enum class CartridgeType{ROM = 0, MBC1 = 1, MBC2 = 2, OTHER = 3};
+	CartridgeType cartridgeType;
 	/*
 		Registers
 		0 - AF
@@ -66,7 +69,7 @@ private:
 	uint8_t screen[144][160];
 	uint8_t cycle_count;
 	bool IME;
-	enum class rel_jp_flag{NZ = 0, Z = 1, NC = 2, C = 3 };
+	enum class RelFlag{NZ = 0, Z = 1, NC = 2, C = 3 };
 	uint8_t ReadMem(uint16_t addr);
 	void WriteMem(uint16_t addr, uint8_t data);
 	uint8_t GetHiRegister(uint16_t reg);
@@ -180,19 +183,19 @@ private:
 	// Jump to HL.
 	void JP();
 	// Conditional jump, f can be NZ, Z, NC, C.
-	uint8_t JP(rel_jp_flag f, uint16_t addr);
+	uint8_t JP(RelFlag f, uint16_t addr);
 	// Relative jump.
 	void JR(int8_t d);
 	// Conditional relative jump, f can be NZ, Z, NC, C.
-	uint8_t JR(rel_jp_flag f, int8_t d);
+	uint8_t JR(RelFlag f, int8_t d);
 	// Call to nn.
 	void CALL(uint16_t nn);
 	// Conditional call, f can be NZ, Z, NC, C.
-	uint8_t CALL(rel_jp_flag, uint16_t nn);
+	uint8_t CALL(RelFlag, uint16_t nn);
 	// Return from a subroutine.
 	void RET();
 	// Conditional return, f can be NZ, Z, NC, C.
-	uint8_t RET(rel_jp_flag f);
+	uint8_t RET(RelFlag f);
 	// Return from a subroutine and enable interrupts.
 	void RETI();
 	// Push present address onto stack. Jump to address $0000 + n.
