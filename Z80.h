@@ -48,6 +48,8 @@ public:
 private:
 	enum class CartridgeType{ROM = 0, MBC1 = 1, MBC2 = 2, OTHER = 3};
 	CartridgeType cartridgeType;
+	uint8_t rom_bank, ram_bank;
+	bool ram_enabled, rom_ram_mode;
 	/*
 		Registers
 		0 - AF

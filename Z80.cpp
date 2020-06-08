@@ -102,11 +102,57 @@ void Z80::WriteMem(uint16_t addr, uint8_t data)
 {
 	if(addr < 0x8000)
 	{
+		if(addr >= 0 && addr < 0x2000)
+		{
+			(data & 0x00ff) == 0x0a ? ram_enabled = true : ram_enabled = false;
+		}
+		else if(addr >= 0x2000 && addr < 0x4000)
+		{
+			if(cartridgeType == CartridgeType::MBC2)
+			{
+				rom_bank = data & 0xf;
+			}
+			else
+			{
+				data &= 0x1f;
+				rom_bank &= 0xc0;
+				rom_bank |= data;
+			}
+			if(rom_bank == 0)
+			{
+				rom_bank = 1;
+			}
+		}
+		else if(addr >= 0x4000 && addr < 0x6000)
+		{
+			ram_bank = 0;
+			if(rom_ram_mode == 1)
+			{
+				ram_bank = data &= 0x3;
+			}
+			else
+			{
+				data &= 0xc0;
+				rom_bank &= 0x1f;
+				rom_bank |= data;
+			}
+		}
+		else if(addr >= 0x6000 && addr < 0x8000)
+		{
+			(data & 0x1) == 0 ? rom_ram_mode = 0 : rom_ram_mode = 1;
+		}
 	}
 	else if((addr >= 0xe000) && (addr < 0xfe00))
 	{
 		memory[addr] = data;
 		WriteMem(addr - 0x2000, data);
+	}
+	else if(addr >= 0xa000 && addr < 0xc000)
+	{
+		if(ram_enabled)
+		{
+			memory[addr] = data;
+		}
 	}
 	else
 	{
